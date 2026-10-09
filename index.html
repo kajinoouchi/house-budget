@@ -1,0 +1,721 @@
+<title>家の予算いくらまで？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDGothic:wght@400;700&family=BIZ+UDPGothic:wght@400;700&display=swap">
+<style>
+/* Layout: 1列のスマホ画面。上から「9つの質問」→「予算の目安（物差し）」→「価格を動かして毎月のお金を見る（通帳）」→「ここから先は有料」。 */
+:root{
+  --paper:#f3f5f9; --card:#ffffff; --ink:#14243a; --ink-2:#4b5b72; --ink-3:#6b788b;
+  --line:#d8dfe9; --accent:#23497f; --accent-soft:#e6edf7;
+  --field:#fffaeb; --field-line:#e6d9a8;
+  --ok:#1b7442; --ok-bg:#e3f3e9; --amber:#9a5b00; --amber-bg:#fdf0d9; --warn:#b3261e; --warn-bg:#fbe7e5;
+  --z-ok:#8fcfa8; --z-amber:#f2c779; --z-warn:#ef9b93;
+  --f-body:"BIZ UDPGothic","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  --f-num:"BIZ UDGothic","Hiragino Sans","Noto Sans JP",ui-monospace,monospace;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f141b; --card:#18202a; --ink:#e7edf5; --ink-2:#aab6c7; --ink-3:#8794a6;
+  --line:#2b3644; --accent:#9cbcf0; --accent-soft:#1e2c40;
+  --field:#232017; --field-line:#4d4428;
+  --ok:#62c98f; --ok-bg:#16301f; --amber:#f0b45a; --amber-bg:#33270f; --warn:#ff8f86; --warn-bg:#3a1a18;
+  --z-ok:#2f7a4f; --z-amber:#8a6420; --z-warn:#8c3a33; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#0f141b; --card:#18202a; --ink:#e7edf5; --ink-2:#aab6c7; --ink-3:#8794a6;
+  --line:#2b3644; --accent:#9cbcf0; --accent-soft:#1e2c40;
+  --field:#232017; --field-line:#4d4428;
+  --ok:#62c98f; --ok-bg:#16301f; --amber:#f0b45a; --amber-bg:#33270f; --warn:#ff8f86; --warn-bg:#3a1a18;
+  --z-ok:#2f7a4f; --z-amber:#8a6420; --z-warn:#8c3a33; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;-webkit-text-size-adjust:100%}
+.wrap{max-width:600px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.35}
+h1{font-size:27px} h2{font-size:18px} h3{font-size:15px}
+p{margin:0}
+button{font:inherit;cursor:pointer;color:inherit}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+.lead{color:var(--ink-2)}
+.sub{font-size:13px;color:var(--ink-2)}
+.tiny{font-size:12px;color:var(--ink-3)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.btn{border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:999px;padding:7px 16px;font-size:14px;font-weight:700;text-decoration:none;display:inline-block}
+.btn.solid{background:var(--accent);color:var(--card)}
+.btn.sm{padding:4px 12px;font-size:13px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.sample{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:13px;color:var(--ink-2);background:var(--accent-soft);border-radius:10px;padding:10px 12px}
+
+/* 質問 */
+.qs{display:flex;flex-direction:column;gap:0}
+.qg{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--accent);padding:14px 0 4px;border-top:1px solid var(--line)}
+.qg:first-child{border-top:0;padding-top:0}
+.q{display:grid;grid-template-columns:28px 1fr;gap:4px 10px;padding:10px 0}
+.qn{width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--card);font-size:12px;font-weight:700;display:grid;place-items:center;margin-top:2px;font-family:var(--f-num)}
+.qb{display:flex;flex-direction:column;gap:6px;min-width:0}
+.qb label,.qb .ql{font-weight:700;font-size:15px}
+.qh{font-size:12px;color:var(--ink-3)}
+.in{display:flex;align-items:center;gap:8px}
+.in input{flex:1;min-width:0;font-family:var(--f-num);font-size:20px;font-weight:700;text-align:right;color:var(--ink);background:var(--field);border:1px solid var(--field-line);border-radius:10px;padding:8px 12px;font-variant-numeric:tabular-nums}
+.in .u{flex:none;width:4.2em;font-size:13px;color:var(--ink-2)}
+.derived{font-size:13px;color:var(--ink-2);background:var(--paper);border-radius:8px;padding:6px 10px}
+.derived b{font-family:var(--f-num);color:var(--ink)}
+.derived.bad{color:var(--warn);background:var(--warn-bg)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;align-self:flex-start}
+.seg button{border:0;background:var(--card);padding:7px 13px;font-size:14px;font-weight:700;color:var(--ink-2);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--card)}
+
+/* 結果 */
+.result{border-top:4px solid var(--accent)}
+.big{font-family:var(--f-num);font-size:44px;font-weight:700;line-height:1.05;letter-spacing:-.01em}
+.big small{font-size:18px;margin-left:2px;font-family:var(--f-body)}
+.second{font-size:15px}
+.second b{font-family:var(--f-num);font-size:19px}
+.ruler{position:relative;padding:22px 0 30px}
+.rbar{position:relative;height:14px;border-radius:7px;overflow:hidden;display:flex;background:var(--line)}
+.rbar > div{height:100%}
+.rmark{position:absolute;top:14px;transform:translateX(var(--tx,-50%));display:flex;flex-direction:column;align-items:center;font-size:11px;color:var(--ink-2);white-space:nowrap;line-height:1.3}
+.rmark.l{align-items:flex-start}.rmark.r{align-items:flex-end}
+.rmark::before{content:"";width:2px;height:22px;background:var(--ink);margin-bottom:2px}
+.rmark.you{top:0;flex-direction:column-reverse}
+.rmark.you::before{content:"";width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--accent);background:none;margin:2px 0 0}
+.rmark.you span{color:var(--accent);font-weight:700}
+.rleg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink-2)}
+.rleg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.chain{display:flex;flex-direction:column;gap:10px}
+.step{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-top:4px}
+.lr.sum{border-bottom:0;border-top:2px solid var(--ink);font-weight:700}
+.lr.sum .a{color:var(--ink);font-size:17px}
+.lr.res .a{color:var(--accent);font-size:17px}
+.total{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;background:var(--accent-soft);border-radius:10px;padding:10px 12px}
+.total .a{font-family:var(--f-num);font-weight:700;font-size:20px;white-space:nowrap}
+.total small{grid-column:1/-1;font-size:12px;color:var(--ink-2)}
+.downbox{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:12px;margin-top:4px}
+.downbox .ql{font-weight:700;font-size:15px}
+.cgrid{display:grid;grid-template-columns:1fr;gap:12px}
+.cf{display:flex;flex-direction:column;gap:6px;min-width:0}
+.cf label{font-weight:700;font-size:15px}
+.cf .qh .lnk2{border:0;background:transparent;color:var(--accent);font-size:12px;font-weight:700;text-decoration:underline;padding:0 2px}
+.lr.tot{border-bottom:0;border-top:2px solid var(--ink);font-weight:700}
+.lr.tot .a{color:var(--ink);font-size:17px}
+.lr.part .a{color:var(--accent)}
+.two2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two2 > div{min-width:0;display:flex;flex-direction:column;gap:2px}
+.two2 .in input{font-size:18px}
+.two2 .in .u{width:auto}
+.egrp{font-size:12px;font-weight:700;color:var(--ink-2);margin-top:6px}
+.egrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 8px;align-items:end}
+.ef{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ef label{font-size:12px;font-weight:700;color:var(--ink-2);line-height:1.3}
+.ef .in input{font-size:16px;padding:6px 8px}
+.ef .in .u{width:auto;font-size:11px}
+.etot{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-top:2px solid var(--ink);padding-top:8px;margin-top:4px;font-weight:700}
+.etot .a{font-family:var(--f-num);font-size:20px;white-space:nowrap}
+.stagebox{display:flex;flex-direction:column;gap:6px}
+.stagebox .sr{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.stagebox .sr span{font-size:12px;font-weight:700;color:var(--ink-2);min-width:3.5em}
+.stagebox .seg{flex-wrap:wrap;max-width:100%}
+.stagebox .seg button{padding:5px 10px;font-size:13px}
+@media (max-width:360px){.stagebox .seg button{padding:5px 7px;font-size:12px}}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.split > div{background:var(--paper);border-radius:10px;padding:10px 12px;min-width:0}
+.split .v{font-family:var(--f-num);font-size:20px;font-weight:700}
+.split .v small{font-size:12px;font-family:var(--f-body)}
+.note{font-size:13px;border-radius:10px;padding:10px 12px}
+.note.warn{color:var(--warn);background:var(--warn-bg)}
+.note.amber{color:var(--amber);background:var(--amber-bg)}
+.note.ok{color:var(--ok);background:var(--ok-bg)}
+.retire{display:flex;flex-direction:column;gap:8px}
+.retire h3{margin-top:4px}
+.retire .rs{font-size:12px;color:var(--ink-2);margin:0}
+.sens{font-size:13px;color:var(--ink-2);margin:0;padding:8px 12px;border-left:3px solid var(--line)}
+
+/* 価格スライダー */
+.pricebox{display:flex;flex-direction:column;gap:8px}
+.prow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.prow .in{flex:1;min-width:180px}
+.pill{display:inline-flex;align-items:center;font-size:13px;font-weight:700;border-radius:999px;padding:2px 12px;white-space:nowrap;border:1px solid}
+.pill.ok{color:var(--ok);background:var(--ok-bg);border-color:var(--ok)}
+.pill.amber{color:var(--amber);background:var(--amber-bg);border-color:var(--amber)}
+.pill.warn{color:var(--warn);background:var(--warn-bg);border-color:var(--warn)}
+input[type=range]{width:100%;accent-color:var(--accent);height:28px}
+
+/* 通帳 */
+.ledger{display:flex;flex-direction:column;background:var(--paper);border-radius:10px;padding:4px 12px}
+.lr{display:grid;grid-template-columns:1fr auto;gap:0 10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px;align-items:baseline}
+.lr small{grid-column:1/-1;font-size:11px;color:var(--ink-3)}
+.lr .a{font-family:var(--f-num);font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap}
+.lr.out .a{color:var(--ink-2)}
+.free{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-top:2px solid var(--ink);padding:10px 0 6px}
+.free b{font-size:15px}
+.free .v{font-family:var(--f-num);font-size:30px;font-weight:700;line-height:1.1;color:var(--ok);white-space:nowrap}
+.free .v.neg{color:var(--warn)}
+.free .v small{font-size:14px;font-family:var(--f-body)}
+.lfoot{font-size:12px;color:var(--ink-2);padding:0 0 10px}
+.facts{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.facts > div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.facts > div:last-child{border-bottom:0}
+.facts b{font-family:var(--f-num);white-space:nowrap}
+
+/* 前提 */
+details.more > summary{cursor:pointer;color:var(--accent);font-weight:700;font-size:14px;list-style:none}
+details.more > summary::-webkit-details-marker{display:none}
+details.more > summary::before{content:"＋ "}
+details.more[open] > summary::before{content:"－ "}
+details.more[open]{gap:12px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:10px}
+.pgrid > div{min-width:0;display:flex;flex-direction:column;gap:4px}
+.pgrid .in .u{width:auto}
+.pgrid .in input{font-size:16px;padding:6px 10px}
+.pgrid label{font-size:13px;font-weight:700}
+.plist{margin:8px 0 0;padding-left:1.2em;font-size:13px;color:var(--ink-2);display:flex;flex-direction:column;gap:4px}
+
+/* 有料 */
+.cta{border:2px solid var(--accent)}
+.offer{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.offer li{border-left:3px solid var(--accent);padding-left:10px;display:flex;flex-direction:column;gap:2px}
+.offer b{font-size:14px}
+.offer span{font-size:13px;color:var(--ink-2)}
+.copybox{width:100%;min-height:200px;font-family:var(--f-body);font-size:12px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px}
+.chk{display:flex;flex-direction:column;gap:8px}
+.ck{display:flex;flex-direction:column;gap:6px;padding:10px 0;border-bottom:1px solid var(--line)}
+.ck:last-child{border-bottom:0}
+.ck p{font-size:14px;font-weight:700}
+.ck .seg button{padding:5px 12px;font-size:13px}
+.ck .seg button[data-st="わからない"][aria-pressed="true"]{background:var(--warn);color:var(--card)}
+.foot{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:6px}
+@media (max-width:340px){.seg button{padding:7px 9px;font-size:13px}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <div class="eyebrow">家を買う前の数字とチェック</div>
+    <h1>家の予算いくらまで？</h1>
+    <p class="lead">収入・支出・貯蓄の3つから、あなたの家計で考える物件価格の目安と、買った後に毎月いくら残るかを出します。物件が決まっていなくても大丈夫です。</p>
+    <div class="sample" id="sampleBar"><span id="sampleText"></span><button class="btn sm" id="clearBtn" type="button">空にして入力する</button><button class="btn sm" id="resetBtn" type="button">例に戻す</button></div>
+  </header>
+
+  <section class="card" aria-labelledby="qTitle">
+    <h2 id="qTitle">9つの質問</h2>
+    <p class="sub">だいたいの数字で大丈夫です。金額はすべて「万円」で入れてください（3.5万円なら3.5）。結果は、毎月のお金は「円」、物件価格や貯金は「万円」で出します。</p>
+    <div class="qs">
+      <div class="qg">収入</div>
+      <div class="q"><span class="qn">1</span><div class="qb"><label for="takeM">毎月の手取り（夫婦の合計）</label><div class="in"><input id="takeM" inputmode="decimal" data-k="takeM"><span class="u">万円/月</span></div><p class="qh">給与明細の「差引支給額」。ボーナスは次の質問で聞きます。</p></div></div>
+      <div class="q"><span class="qn">2</span><div class="qb"><label for="bonus">ボーナスの手取り（1年の合計）</label><div class="in"><input id="bonus" inputmode="decimal" data-k="bonus"><span class="u">万円/年</span></div><p class="qh">なければ0。</p></div></div>
+      <div class="qg">支出</div>
+      <div class="q"><span class="qn">3</span><div class="qb"><label for="rent">今の家賃</label><div class="in"><input id="rent" inputmode="decimal" data-k="rent"><span class="u">万円/月</span></div><p class="qh">共益費込み。実家暮らしなどで家賃がなければ0。</p></div></div>
+      <div class="q"><span class="qn">4</span><div class="qb"><span class="ql">家賃以外の生活費</span><p class="qh">わかる費目だけで大丈夫です。通帳やカード明細の直近3か月の平均がおすすめです。</p>
+        <div class="egrp">毎月の出費</div><div class="egrid" id="eMonthly"></div>
+        <div class="egrp">年に1回などの出費（年額で入力・12で割って足します）</div><div class="egrid" id="eYearly"></div>
+        <div class="etot" id="eTotal"></div>
+        <p class="derived" id="spendLine"></p></div></div>
+      <div class="qg">貯蓄</div>
+      <div class="q"><span class="qn">5</span><div class="qb"><label for="cash">今の貯金（預金・NISAなどの合計）</label><div class="in"><input id="cash" inputmode="decimal" data-k="cash"><span class="u">万円</span></div><p class="qh">親からの援助が決まっていれば足してください。</p></div></div>
+      <div class="q"><span class="qn">6</span><div class="qb"><span class="ql" id="saveL">買った後も続ける毎月の積立</span>
+        <div class="two2"><div><label for="saveCash" class="qh">現金の貯金</label><div class="in"><input id="saveCash" inputmode="decimal" data-k="saveCash"><span class="u">万円/月</span></div></div>
+        <div><label for="saveNisa" class="qh">NISA</label><div class="in"><input id="saveNisa" inputmode="decimal" data-k="saveNisa"><span class="u">万円/月</span></div></div></div>
+        <p class="qh">子どもの教育費・老後の資金・急な出費に備えて、家を買った後も毎月続けたい額。教育費はこの積立から出す前提なので、別には引きません。この分を残したうえで、返済に回せる額を出します。ボーナスから積み立てる分は12で割って足してください。</p></div></div>
+      <div class="qg">家族と住まい</div>
+      <div class="q"><span class="qn">7</span><div class="qb"><label for="age">ローンを借りる人の年齢</label><div class="in"><input id="age" inputmode="numeric" data-k="age"><span class="u">歳</span></div></div></div>
+      <div class="q"><span class="qn">8</span><div class="qb"><span class="ql" id="kidsL">子ども</span>
+        <p class="qh" style="margin-top:-2px">今いる子ども</p><div class="seg" role="group" aria-labelledby="kidsL" id="kidsSeg"></div>
+        <div id="stageBox" class="stagebox"></div>
+        <p class="qh">これから予定の子ども</p><div class="seg" role="group" aria-label="これから予定の子ども" id="planSeg"></div>
+        <p class="qh">今かかっている子どもの費用は、質問4の生活費に入れてください。ここでは、子どもが大きくなるにつれて<b>これから増える</b>学校・塾・習い事などの費用を足します。大学の入学金・学費は、質問6の積立から出す前提なので足しません。</p>
+        <p class="derived" id="kidLine"></p></div></div>
+      <div class="q"><span class="qn">9</span><div class="qb"><span class="ql" id="typeL">考えている家</span><div class="seg" role="group" aria-labelledby="typeL" id="typeSeg"></div><p class="qh">戸建は修繕の積立、マンションは管理費・修繕積立金を、毎月の費用に入れます。</p></div></div>
+    </div>
+  </section>
+
+  <section class="card result" aria-labelledby="rTitle" id="result">
+    <h2 id="rTitle">あなたの家計で考える物件価格の目安</h2>
+    <div class="big" id="safeVal"></div>
+    <p class="second" id="limitWhy"></p>
+    <div class="ledger" id="planBox"></div>
+    <div class="ruler" id="ruler" aria-hidden="true"></div>
+    <div class="rleg" aria-hidden="true"><span><i style="background:var(--z-ok)"></i>目安の範囲（金利<span class="stressT">2.5</span>%でも収まる）</span><span><i style="background:var(--z-amber)"></i>今の金利なら収まる</span><span><i style="background:var(--z-warn)"></i>設定した条件では収まらない</span></div>
+    <div id="cashWarn"></div>
+    <div class="retire" id="retire"></div>
+    <p class="note amber">簡易的な目安です。計算に含めていないもの：退職後の収入減、教育費が重くなる時期の山（教育費は積立から出す前提）、車の買い替え、住宅ローン控除、金利の上がり方の違い。金融機関の審査結果や将来の家計の安全を示すものではありません。購入前にはライフプランをしっかり組むことをおすすめします。</p>
+    <details class="more">
+      <summary>この価格の出し方を見る（収入・支出・貯蓄から）</summary>
+      <div id="chain" style="margin-top:10px"></div>
+    </details>
+  </section>
+
+  <section class="card" aria-labelledby="pTitle">
+    <h2 id="pTitle">気になる物件で確かめる</h2>
+    <p class="sub">物件価格・諸費用・借入額を入れると、買った後のお金がわかります。空欄の欄は自動で計算します。金額は万円で入れてください。</p>
+    <div class="cgrid">
+      <div class="cf"><label for="price">物件価格</label><div class="in"><input id="price" inputmode="decimal"><span class="u">万円</span></div><input type="range" id="priceRange" min="500" max="10000" step="10" aria-label="物件価格を動かす"></div>
+      <div class="cf"><label for="cost">諸費用</label><div class="in"><input id="cost" inputmode="decimal"><span class="u">万円</span></div><p class="qh" id="costHint"></p></div>
+      <div class="cf"><label for="loan">借入額</label><div class="in"><input id="loan" inputmode="decimal"><span class="u">万円</span></div><p class="qh" id="loanHint"></p></div>
+    </div>
+    <div class="ledger" id="fund"></div>
+    <div id="zoneLine"></div>
+    <h3>買った後の毎月のお金（今の金利）</h3>
+    <div class="ledger" id="ledgerN"></div>
+    <div class="facts" id="facts"></div>
+  </section>
+
+  <section class="card">
+    <details class="more">
+      <summary>この目安の前提を見る・変える</summary>
+      <div class="pgrid">
+        <div><label for="rate">ローン金利（今）</label><div class="in"><input id="rate" inputmode="decimal" data-k="rate"><span class="u">%</span></div></div>
+        <div><label for="freeMin">残したい自由費（こづかいなど）</label><div class="in"><input id="freeMin" inputmode="decimal" data-k="freeMin"><span class="u">万円/月</span></div></div>
+        <div><label for="stress">上がった場合の金利</label><div class="in"><input id="stress" inputmode="decimal" data-k="stress"><span class="u">%</span></div></div>
+        <div><label for="years">返済期間</label><div class="in"><input id="years" inputmode="numeric" data-k="years"><span class="u">年</span></div></div>
+        <div><label for="planPer">予定の子ども1人で増える費用（児童手当を差し引いた額）</label><div class="in"><input id="planPer" inputmode="decimal" data-k="planPer"><span class="u">万円/月</span></div></div>
+        <div><label for="nisaRet">NISAの想定利回り（年）</label><div class="in"><input id="nisaRet" inputmode="decimal" data-k="nisaRet"><span class="u">%</span></div></div>
+        <div><label for="uniPer">大学費用（子ども1人あたり）</label><div class="in"><input id="uniPer" inputmode="decimal" data-k="uniPer"><span class="u">万円</span></div></div>
+      </div>
+      <ul class="plist" id="plist"></ul>
+    </details>
+  </section>
+
+  <section class="card cta" aria-labelledby="cTitle" id="cta">
+    <h2 id="cTitle">ここから先は、あなたの家と家計で確かめます</h2>
+    <p class="sub">このアプリは、今の家計から見た価格の目安を出す簡易版です。家を買う判断には、ライフプランをしっかり組むことをおすすめします。次のことは、あなたの数字と物件の資料を一緒に見ないと決められません。</p>
+    <ul class="offer">
+      <li><b>95歳までのお金の流れ</b><span>教育費がいちばん重い年、車の買い替え・修繕・介護、退職後に貯金が底をつかないか</span></li>
+      <li><b>金利が上がったときの返済</b><span>上がり方ごとの毎月の返済、5年ルール・125%ルールで払いきれない利息、繰上返済の時期</span></li>
+      <li><b>税金と制度</b><span>住宅ローン控除で戻る額、固定資産税、子育て世帯の上乗せが使えるか</span></li>
+      <li><b>物件そのもの</b><span>ハザード（浸水の深さ）、前の道路と接道、登記、近くの取引価格から見た売るときの値段</span></li>
+    </ul>
+    <p class="sub"><b>申込前 家計×物件チェックレポート</b>（有料）では、これらを確かめて書面にまとめます。<span id="ctaState">受付は準備中です。</span></p>
+    <div class="btns"><button class="btn solid" type="button" id="copyBtn">入力と結果をまとめてコピー</button><a class="btn" id="ctaLink" href="#" target="_blank" rel="noopener" hidden>申し込む</a></div>
+    <p class="tiny" id="copyMsg" aria-live="polite"></p>
+    <textarea id="copyBox" class="copybox" readonly hidden aria-label="入力と結果のまとめ"></textarea>
+    <details class="more">
+      <summary>物件が決まっている方へ：6つ確かめましたか</summary>
+      <p class="sub" style="margin-top:8px">調べなくて大丈夫です。今わかっているかどうかだけ答えてください。答えはまとめのコピーにも入ります。</p>
+      <div class="chk" id="chk"></div>
+    </details>
+  </section>
+
+  <footer class="foot">
+    <p>この計算はあくまで簡易的な目安です。税・社会保険料・住宅ローン控除・教育費の年ごとの増減は含めていません。購入前にはライフプランをしっかり組むことをおすすめします。借入は金融機関に確認したうえで判断してください。</p>
+    <p>入力した数字はこの端末のブラウザにだけ保存され、外部には送信されません。</p>
+    <p>作成：かじ（家を買う前の数字とチェック）</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+var KEY = "house-budget-entry-v1", CTA_URL = "";
+var EXP = [
+  ["food","食費（外食も）","m"],["daily","日用品","m"],["util","水道・光熱費","m"],["phone","通信費（スマホ・ネット）","m"],
+  ["car","車（ガソリン・駐車場・保険）","m"],["ins","保険料（生命・医療）","m"],["kid","子ども（保育料・習い事・衣類）","m"],
+  ["fun","趣味・交際・美容・衣服","m"],["other","その他","m"],
+  ["travel","旅行・帰省","y"],["carTax","車検・自動車税","y"],["event","冠婚葬祭・家電の買い替え","y"]];
+var EXP_SAMPLE = { food: 5.5, daily: 1, util: 2, phone: 1.2, car: 2, ins: 1, kid: 2, fun: 1.5, other: 1, travel: 15, carTax: 8, event: 10 };
+var SAMPLE = { takeM: 38, bonus: 80, rent: 11, spendM: 20, exp: EXP_SAMPLE, cash: 700, age: 32, kids: 2, stages: ["pre","pre"], kidsPlan: 0, planEdu: 0, type: "戸建", costIn: null, loanIn: null, freeMin: 3, rate: 1.0, stress: 2.5, years: 35, saveCash: 1.5, saveNisa: 3, eduPer: 3, planPer: 2.5, nisaRet: 3, uniPer: 500, price: null, chk: {} };
+var BLANK = { takeM: null, bonus: 0, rent: null, spendM: null, exp: {}, cash: null, age: null, kids: 0, stages: [], kidsPlan: 0, planEdu: 0, type: "戸建", costIn: null, loanIn: null, freeMin: 3, rate: 1.0, stress: 2.5, years: 35, saveCash: null, saveNisa: null, eduPer: 3, planPer: 2.5, nisaRet: 3, uniPer: 500, price: null, chk: {} };
+var $ = function(id){ return document.getElementById(id); };
+var clone = function(o){ return JSON.parse(JSON.stringify(o)); };
+var I;
+try { I = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { I = null; }
+if (!I || typeof I !== "object") I = clone(SAMPLE);
+if (!("spendM" in I) && I.saveY !== null && I.saveY !== undefined && I.takeM) I.spendM = Math.max(0, Math.round(((+I.takeM * 12 + (+I.bonus || 0) - (+I.rent || 0) * 12 - (+I.saveY)) / 12) * 10) / 10);
+if (!("saveCash" in I) && isFinite(+I.oldPct) && I.takeM) { var _m = (+I.takeM * 12 + (+I.bonus || 0)) / 12 * (+I.oldPct) / 100; I.saveCash = Math.round(_m / 3 * 10) / 10; I.saveNisa = Math.round(_m * 2 / 3 * 10) / 10; }
+if (!I._v2) { if (I.eduPer === 2) I.eduPer = 3; I._v2 = 1; }
+if (!I._v3) { if (+I.planPer === 5 || I.planPer === undefined) I.planPer = 2.5; I.planEdu = 0; I._v3 = 1; }
+if (!I.exp) { I.exp = (I.spendM === 23) ? clone(EXP_SAMPLE) : (I.spendM !== null && I.spendM !== undefined ? { other: +I.spendM } : {}); }
+if (I.exp && "pocket" in I.exp) delete I.exp.pocket;
+Object.keys(SAMPLE).forEach(function(k){ if (!(k in I)) I[k] = clone(SAMPLE[k]); });
+if (!Array.isArray(I.stages)) I.stages = [];
+while (I.stages.length < n(I.kids)) I.stages.push("pre");
+calcSpend();
+var yearsTouched = !!I._yearsTouched;
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(I)); } catch (e) {} }
+function calcSpend(){
+  var any = false, t = 0;
+  EXP.forEach(function(e){ var v = I.exp[e[0]]; if (v !== null && v !== undefined && isFinite(v)) { any = true; t += e[2] === "y" ? v / 12 : +v; } });
+  I.spendM = any ? Math.round(t * 100) / 100 : null;
+}
+function isSample(){ return JSON.stringify(I.stages) === JSON.stringify(SAMPLE.stages) && JSON.stringify(I.exp) === JSON.stringify(EXP_SAMPLE) && ["takeM","bonus","rent","cash","saveCash","saveNisa","age","kids","kidsPlan","type"].every(function(k){ return I[k] === SAMPLE[k]; }); }
+
+/* ---------- 表示 ---------- */
+function man(v){ if (v === null || v === undefined || !isFinite(v)) return "-"; var r = Math.round(v / 10) * 10; return (r < 0 ? "▲" : "") + Math.abs(r).toLocaleString("ja-JP"); }
+function yen(v){ if (v === null || v === undefined || !isFinite(v)) return "-"; var r = Math.round(v / 100) * 100; return (r < 0 ? "▲" : "") + Math.abs(r).toLocaleString("ja-JP"); }
+function man1(v){ if (v === null || v === undefined || !isFinite(v)) return "-"; var r = Math.round(v); return (r < 0 ? "▲" : "") + Math.abs(r).toLocaleString("ja-JP"); }
+function yenM(v){ return yen(v * 10000) + "円"; }
+function n(v){ return (v === null || v === undefined || v === "" || !isFinite(+v)) ? 0 : +v; }
+function isSet(v){ return v !== null && v !== undefined && v !== "" && isFinite(v); }
+
+/* ---------- 計算（入力は万円、計算も万円。表示の直前に円へ） ---------- */
+// 今いる子ども1人の「これから増える」学校・塾・習い事の月額（万円）。文部科学省「子供の学習費調査」（公立）の学年ごとの年額から、今の段階との差を平均した目安
+var STAGES = [["pre","未就学",2.5],["ele","小学生",1.5],["mid","中学生",0.5],["high","高校以上",0]];
+var COST_RATE = 0.07, TAX_RATE = 0.003, RES_MONTHS = 6, RES_MIN = 100, EPS = 0.001;
+function PMT(r, m, pv){ if (pv <= 0 || m <= 0) return 0; if (r <= 0) return pv / m; return pv * r / (1 - Math.pow(1 + r, -m)); }
+function PV(p, r, m){ if (p <= 0 || m <= 0) return 0; if (r <= 0) return p * m; return p * (1 - Math.pow(1 + r, -m)) / r; }
+function base(){
+  var mLiving = 0, yYear = 0;
+  EXP.forEach(function(e){ var v = n(I.exp[e[0]]); if (e[2] === "y") yYear += v; else mLiving += v; });
+  var rate = Math.max(0, n(I.rate)), stress = Math.max(rate, n(I.stress));
+  var b = {
+    takeM: n(I.takeM), bonus: n(I.bonus), takeY: n(I.takeM) * 12 + n(I.bonus), incM: n(I.takeM) + n(I.bonus) / 12,
+    mLiving: mLiving, yYear: yYear, yRes: yYear / 12,
+    kidUp: kidUpOf(), plan: n(I.kidsPlan) * n(I.planPer),
+    saveC: n(I.saveCash), saveN: n(I.saveNisa), freeMin: n(I.freeMin),
+    months: Math.max(12, Math.round(n(I.years) * 12)), rate: rate, stress: stress, r: rate / 100 / 12, rUp: stress / 100 / 12
+  };
+  b.save = b.saveC + b.saveN;
+  b.plan = b.kidUp + b.plan; b.planOnly = n(I.kidsPlan) * n(I.planPer);
+  b.living = b.mLiving + b.yRes + b.plan;           // 生活防衛資金の計算に使う生活費（積立は含めない）
+  b.fixedNoHouse = b.mLiving + b.yRes + b.plan + b.save;   // 住まい以外に毎月出ていくお金（教育費は積立から出す）
+  return b;
+}
+function stageOf(i){ var st = (I.stages || [])[i]; return STAGES.filter(function(x){ return x[0] === st; })[0] || STAGES[0]; }
+function kidUpOf(){ var t = 0; for (var i = 0; i < n(I.kids); i++) t += stageOf(i)[2]; return t; }
+function maint(P){ return P * TAX_RATE / 12 + (I.type === "マンション" ? 3.1 : 1.8); }
+function costAuto(P){ return P * COST_RATE; }
+function payOf(b, L, up){ return PMT(up ? b.rUp : b.r, b.months, L); }
+function reserveOf(b, P, L){ return Math.max(RES_MIN, (b.living + payOf(b, L, true) + maint(P)) * RES_MONTHS); }
+// 返済に回せる額（月・万円）。手取りはボーナス込みの月平均
+function room(b, P){ return b.incM - b.fixedNoHouse - maint(P) - b.freeMin; }
+// 貯金で諸費用・頭金を出し、生活防衛資金を残せる最小の借入（0〜物件価格）
+function autoLoan(b, P, C){
+  var cash = n(I.cash), f = function(L){ return cash - (P + C - L) - reserveOf(b, P, L); };
+  if (f(0) >= 0) return 0;
+  if (f(P) < 0) return P;
+  var lo = 0, hi = P;
+  for (var i = 0; i < 50; i++) { var mid = (lo + hi) / 2; if (f(mid) >= 0) hi = mid; else lo = mid; }
+  return hi;
+}
+function evalAt(b, P, user){
+  var C = (user && isSet(I.costIn)) ? Math.max(0, +I.costIn) : costAuto(P);
+  var La = autoLoan(b, P, C);
+  var L = (user && isSet(I.loanIn)) ? Math.min(Math.max(0, +I.loanIn), P + C) : La;
+  var own = Math.max(0, P + C - L), cash = n(I.cash), left = cash - own;
+  var res = reserveOf(b, P, L), mt = maint(P), pay = payOf(b, L, false), payUp = payOf(b, L, true);
+  var normal = b.incM - b.mLiving - b.yRes - pay - mt - b.plan - b.save;      // 毎月の残り＝自由費（今の金利）
+  var normalUp = normal + pay - payUp;                                          // 金利が上がったときの自由費
+  return {
+    P: P, C: C, L: L, La: La, own: own, down: Math.max(0, P - L), costLoan: Math.max(0, L - P),
+    left: left, reserve: res, resShort: Math.max(0, res - Math.max(0, left)), cashShort: Math.max(0, -left),
+    maint: mt, pay: pay, payUp: payUp, normal: normal, normalUp: normalUp,
+    room: room(b, P)
+  };
+}
+// 判定：金利が上がっても毎月の自由費を残せる ＋ 生活防衛資金を残せる（up=false は今の金利のまま）
+function okAt(b, P, up){
+  var a = evalAt(b, P, false);
+  return { monthly: (up ? a.payUp : a.pay) <= room(b, P) + EPS, funds: a.resShort <= EPS, a: a };
+}
+function budget(b, up){
+  var t0 = okAt(b, 0.01, up);
+  if (!(t0.monthly && t0.funds)) return { P: 0, why: !t0.monthly ? "monthly" : "funds", t0: t0 };
+  var lo = 0, hi = 30000;
+  for (var i = 0; i < 60; i++) { var mid = (lo + hi) / 2, t = okAt(b, mid, up); if (t.monthly && t.funds) lo = mid; else hi = mid; }
+  var P = Math.floor(lo / 10) * 10, nx = okAt(b, P + 10, up);
+  return { P: P, why: !nx.monthly ? "monthly" : "funds" };
+}
+
+// k か月返したあとのローン残高（万円）
+function balAfter(r, m, L, k){ if (L <= 0 || k >= m) return 0; if (k <= 0) return L; if (r <= 0) return L * (1 - k / m); var p = PMT(r, m, L), g = Math.pow(1 + r, k); return Math.max(0, L * g - p * (g - 1) / r); }
+// 65歳の時点の見込み（取り崩しなし）
+var RET_AGE = 65;
+function at65(b, a, ret){
+  var age = n(I.age), k = Math.max(0, Math.round((RET_AGE - age) * 12));
+  var endAge = age + b.months / 12;
+  var g = Math.max(0, ret === undefined ? n(I.nisaRet) : ret) / 100 / 12;
+  var nisa = b.saveN <= 0 ? 0 : (g > 0 ? b.saveN * (Math.pow(1 + g, k) - 1) / g : b.saveN * k);
+  var cash = Math.max(0, a.left) + b.saveC * k;
+  var kidsN = n(I.kids) + n(I.kidsPlan), uni = kidsN * Math.max(0, n(I.uniPer));
+  var bal = balAfter(b.r, b.months, a.L, k), balUp = balAfter(b.rUp, b.months, a.L, k);
+  var net = cash + nisa - uni;
+  return { age: age, k: k, endAge: endAge, over: Math.max(0, endAge - RET_AGE), nisa: nisa, cash: cash, kidsN: kidsN, uni: uni, bal: bal, balUp: balUp, net: net, after: net - bal, afterUp: net - balUp };
+}
+function sgn(v){ return (Math.round(v / 10) * 10 < 0 ? "▲" : "") + man(Math.abs(v)); }
+// 生活費が月1万円多い場合の目安（入力のぶれで予算がどれだけ動くか）
+function sensOf(b, B0){ var b2 = Object.assign({}, b); b2.mLiving += 1; b2.living += 1; b2.fixedNoHouse += 1; var B2 = budget(b2, true); return { P: B2.P, d: B0.P - B2.P }; }
+function ageTxt(x){ return (Math.round(x * 10) / 10) + "歳"; }
+function retireHTML(b, a){
+  var t = at65(b, a);
+  if (t.age >= RET_AGE) return "";
+  var h = '<h3>' + RET_AGE + '歳の時点では（約' + man(a.P) + '万円で買った場合）</h3><div class="ledger">' +
+    lr("in", "払い終わる年齢", ageTxt(t.endAge), "借入" + man(a.L) + "万円・" + n(I.years) + "年") +
+    lr("out", RET_AGE + "歳時点のローン残高", man(t.bal) + "万円", t.bal > 0 ? "金利" + b.rate + "%のまま。金利" + b.stress + "%なら" + man(t.balUp) + "万円" : RET_AGE + "歳より前に払い終わります") +
+    lr("in", "現金の貯金", man(t.cash) + "万円", "買った後に残る" + man(Math.max(0, a.left)) + "万円＋月" + n(I.saveCash) + "万円×" + Math.round(t.k / 12) + "年") +
+    lr("in", "NISA", man(t.nisa) + "万円", "月" + n(I.saveNisa) + "万円×" + Math.round(t.k / 12) + "年" + (n(I.nisaRet) > 0 ? "・年" + n(I.nisaRet) + "%で増えた場合" : "（増えない場合）")) +
+    (t.uni > 0 ? lr("out", "大学費用", "−" + man(t.uni) + "万円", "子ども" + t.kidsN + "人×" + n(I.uniPer) + "万円。積立から出す前提") : "") +
+    lr("sum", "残高を返した後に残る", (t.after < 0 ? "▲" : "") + man(Math.abs(t.after)) + "万円", t.bal > 0 ? "金利" + b.stress + "%なら" + (t.afterUp < 0 ? "▲" : "") + man(Math.abs(t.afterUp)) + "万円" : "") + '</div>';
+  var m = t.bal > 0 ? "退職後も約" + Math.ceil(t.over) + "年、返済が続く計算です。" + RET_AGE + "歳時点の残高" + man(t.bal) + "万円を貯金とNISAで返すと、" + (t.after >= 0 ? "残るのは約" + man(t.after) + "万円です。" : "約" + man(-t.after) + "万円足りません。") : RET_AGE + "歳より前に払い終わる計算です。" + (t.after >= 0 ? "" : "ただし大学費用を払うと、貯金とNISAが約" + man(-t.after) + "万円足りません。");
+  if (t.after < 0) m += "退職金を含めて考えるか、借入額・返済期間・積立の額を見直す必要があります。";
+  h += note(t.bal > 0 || t.after < 0 ? (t.after < 0 ? "warn" : "amber") : "ok", m);
+  var t1 = at65(b, a, 1), t5 = at65(b, a, 5);
+  if (b.saveN > 0) h += '<p class="sens">NISAの増え方で大きく変わります。利回りが年1%なら残るのは約' + sgn(t1.after) + '万円、年5%なら約' + sgn(t5.after) + '万円です。</p>';
+  h += '<p class="rs">貯金を途中で使わなかった場合の見込みです。車の買い替え・家の修繕・介護などで使う分、退職金、年金は入れていません。老後に必要な額は人によって違うため、足りるかどうかは判定していません。</p>';
+  return h;
+}
+
+/* ---------- 入力欄 ---------- */
+function segs(){
+  $("kidsSeg").innerHTML = [0,1,2,3].map(function(k){ return '<button type="button" data-kids="' + k + '" aria-pressed="' + (n(I.kids) === k) + '">' + (k === 3 ? "3人" : k + "人") + '</button>'; }).join("");
+  I.stages = I.stages || [];
+  $("stageBox").innerHTML = Array.apply(null, Array(n(I.kids))).map(function(_, i){ var cur = stageOf(i)[0];
+    return '<div class="sr"><span>' + (i + 1) + '人目</span><div class="seg" role="group" aria-label="' + (i + 1) + '人目の今の段階">' + STAGES.map(function(x){ return '<button type="button" data-stage="' + i + '" data-v="' + x[0] + '" aria-pressed="' + (cur === x[0]) + '">' + x[1] + '</button>'; }).join("") + '</div></div>'; }).join("");
+  $("planSeg").innerHTML = [0,1,2].map(function(k){ return '<button type="button" data-plan="' + k + '" aria-pressed="' + (n(I.kidsPlan) === k) + '">' + k + "人" + '</button>'; }).join("");
+  $("typeSeg").innerHTML = ["戸建","マンション"].map(function(t){ return '<button type="button" data-type="' + t + '" aria-pressed="' + (I.type === t) + '">' + t + '</button>'; }).join("");
+}
+function expFields(){
+  var f = function(e){ var v = I.exp[e[0]]; return '<div class="ef"><label for="e_' + e[0] + '">' + e[1] + '</label><div class="in"><input id="e_' + e[0] + '" data-e="' + e[0] + '" inputmode="decimal" value="' + (v === null || v === undefined ? "" : v) + '"><span class="u">' + (e[2] === "y" ? "万円/年" : "万円/月") + '</span></div></div>'; };
+  $("eMonthly").innerHTML = EXP.filter(function(e){ return e[2] === "m"; }).map(f).join("");
+  $("eYearly").innerHTML = EXP.filter(function(e){ return e[2] === "y"; }).map(f).join("");
+}
+function fill(){
+  expFields();
+  [].forEach.call(document.querySelectorAll("[data-k]"), function(el){ var v = I[el.dataset.k]; el.value = (v === null || v === undefined) ? "" : v; });
+  segs();
+}
+function parse(s){ var t = String(s).replace(/[,，、\s]/g, "").replace(/[０-９．]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }); if (t === "") return null; var x = parseFloat(t); return isFinite(x) ? x : null; }
+document.addEventListener("input", function(ev){
+  var el = ev.target;
+  if (el.dataset && el.dataset.k) {
+    I[el.dataset.k] = parse(el.value);
+    if (el.dataset.k === "years") { yearsTouched = true; I._yearsTouched = true; }
+    if (el.dataset.k === "age" && !yearsTouched && I.age) I.years = Math.max(10, Math.min(35, 80 - I.age));
+    if (el.dataset.k === "age") $("years").value = I.years;
+    save(); render();
+  } else if (el.dataset && el.dataset.e) {
+    I.exp[el.dataset.e] = parse(el.value); calcSpend(); save(); render();
+  } else if (el.id === "price") { I.price = parse(el.value); save(); render(); }
+  else if (el.id === "priceRange") { I.price = +el.value; $("price").value = I.price; save(); render(); }
+  else if (el.id === "cost") { I.costIn = parse(el.value); save(); render(); }
+  else if (el.id === "loan") { I.loanIn = parse(el.value); save(); render(); }
+});
+document.addEventListener("click", function(ev){
+  var b = ev.target.closest("button"); if (!b) return;
+  var d = b.dataset;
+  if (d.kids !== undefined) { I.kids = +d.kids; I.stages = (I.stages || []).slice(0, I.kids); while (I.stages.length < I.kids) I.stages.push("pre"); segs(); save(); render(); }
+  else if (d.plan !== undefined) { I.kidsPlan = +d.plan; segs(); save(); render(); }
+  else if (d.stage !== undefined) { I.stages[+d.stage] = d.v; segs(); save(); render(); }
+  else if (d.type) { I.type = d.type; segs(); save(); render(); }
+  else if (d.ck) { I.chk = I.chk || {}; I.chk[d.ck] = d.st; save(); renderChk(); }
+  else if (b.id === "resetBtn") { I = clone(SAMPLE); calcSpend(); yearsTouched = false; try { localStorage.removeItem(KEY); } catch (e) {} fill(); render(); }
+  else if (b.id === "clearBtn") { I = clone(BLANK); calcSpend(); yearsTouched = false; save(); fill(); render(); $("takeM").focus(); }
+  else if (b.id === "copyBtn") copySummary();
+  else if (d.auto === "cost") { I.costIn = null; $("cost").value = ""; save(); render(); }
+  else if (d.auto === "loan") { I.loanIn = null; $("loan").value = ""; save(); render(); }
+});
+
+/* ---------- 描画の部品 ---------- */
+function kidUpNote(){ var a = []; for (var i = 0; i < n(I.kids); i++) { var st = stageOf(i); a.push((i + 1) + "人目" + st[1] + "＋" + st[2] + "万円"); } return a.join("・"); }
+function lr(cls, l, v, note){ return '<div class="lr ' + cls + '"><span>' + l + '</span><span class="a">' + v + '</span>' + (note ? '<small>' + note + '</small>' : '') + '</div>'; }
+function note(cls, html){ return '<p class="note ' + cls + '">' + html + '</p>'; }
+var NOT_INCLUDED = "計算に含めていないもの：退職後の収入（年金）と生活費、退職金、教育費が重くなる時期の山（積立で足りるか）、ボーナスの増減、車の買い替え、住宅ローン控除、金利の上がり方の違い。";
+
+/* ---------- 描画 ---------- */
+var OUT = null;
+function ready(){ return n(I.takeM) > 0 && I.spendM !== null && isSet(I.cash) && n(I.age) > 0; }
+function render(){
+  var b = base();
+  $("sampleText").textContent = isSample() ? "いま入っているのは例の数字です（手取り月38万円・生活費月20万円・貯金700万円）。あなたの数字に書き換えてください。" : "あなたの数字で計算しています。";
+  $("eTotal").innerHTML = '<span>生活費の合計（年払いの取り置き込み）</span><span class="a">月' + (I.spendM === null ? "-" : yenM(I.spendM)) + '</span>';
+  var sl = $("spendLine");
+  if (n(I.takeM) > 0 && I.spendM !== null) {
+    var saveNowY = b.takeY - n(I.rent) * 12 - b.mLiving * 12 - b.yYear;
+    sl.className = "derived" + (saveNowY < 0 ? " bad" : "");
+    sl.innerHTML = saveNowY < 0 ? "手取り（ボーナス込み）より支出が多い計算です（年" + man(-saveNowY) + "万円の赤字）。数字を見直してください。" :
+      "確かめ：ボーナス込みの手取りから家賃とこの生活費を引くと、<b>年" + man(saveNowY) + "万円</b>貯まる計算です。実際の貯金の増え方より多ければ、書き漏れの支出があります。";
+    sl.hidden = false;
+  } else sl.hidden = true;
+  [].forEach.call(document.querySelectorAll(".stressT"), function(e){ e.textContent = b.stress; });
+  $("kidLine").innerHTML = (b.kidUp + b.planOnly > 0) ? "→ 子どものこれから増える費用として、毎月<b>" + yenM(b.kidUp + b.planOnly) + "</b>を足して計算します（" + [b.kidUp > 0 ? "今いる子ども" + yenM(b.kidUp) : "", b.planOnly > 0 ? "予定の子ども" + yenM(b.planOnly) : ""].filter(Boolean).join("＋") + "）。" : "→ 子どもの費用は足していません。";
+  if (!ready()) {
+    $("safeVal").innerHTML = '<span style="font-size:20px;color:var(--ink-3)">質問1・4・5・7を入れると表示します</span>';
+    ["limitWhy","planBox","ruler","cashWarn","retire","chain","fund","zoneLine","ledgerN","facts"].forEach(function(id){ $(id).innerHTML = ""; });
+    OUT = null; renderPlist(b); renderChk(); return;
+  }
+  var B0 = budget(b, true), B1 = budget(b, false);
+  var a0 = evalAt(b, B0.P, false);
+  OUT = { b: b, B0: B0, B1: B1, a0: a0 };
+  renderResult(b, B0, B1, a0);
+  var P = isSet(I.price) && I.price > 0 ? +I.price : (B0.P > 0 ? B0.P : 2000);
+  var top = Math.max(2000, Math.ceil(Math.max(B1.P * 1.3, P * 1.1, B0.P + 500) / 500) * 500);
+  var rg = $("priceRange"); rg.max = top; rg.min = 500; if (document.activeElement !== rg) rg.value = P;
+  if (document.activeElement !== $("price")) $("price").value = isSet(I.price) && I.price > 0 ? I.price : "";
+  $("price").placeholder = man(P);
+  renderRuler(B0.P, B1.P, P, top);
+  var aP = evalAt(b, P, true);
+  OUT.aP = aP;
+  renderCheck(b, aP);
+  renderMonthly(b, aP);
+  renderPlist(b); renderChk();
+}
+function renderResult(b, B0, B1, a){
+  if (B0.P <= 0) {
+    $("safeVal").innerHTML = '<span style="font-size:22px">いまの条件では計算できません</span>';
+    var t = B0.t0.a, why;
+    if (B0.why === "monthly") why = "手取り（ボーナス込みの月平均）から、生活費・積立・家の維持費・自由費を引くと、返済に回せるお金が残りません（月" + yenM(room(b, 0)) + "）。生活費・積立・自由費を見直すか、収入が増えてから考える必要があります。";
+    else why = "貯金" + man(n(I.cash)) + "万円では、買った後に残したい生活防衛資金（" + man(t.reserve) + "万円＝生活費の6か月分・最低100万円）を確保できません。先に貯金を増やす必要があります。";
+    $("limitWhy").innerHTML = why;
+    ["planBox","cashWarn","retire","chain"].forEach(function(id){ $(id).innerHTML = ""; });
+    return;
+  }
+  $("safeVal").innerHTML = "約" + man(B0.P) + "<small>万円まで</small>";
+  $("limitWhy").innerHTML = "手取り（ボーナス込みの月平均）で、金利が" + b.stress + "%に上がっても、生活費・積立を払い、自由費を月" + yenM(b.freeMin) + "残せる物件価格です。" +
+    (B0.why === "funds" ? "この価格は、<b>貯金</b>（諸費用と生活防衛資金を残せるか）で決まっています。" : "この価格は、<b>毎月の収支</b>で決まっています。");
+  $("planBox").innerHTML =
+    lr("in", "物件価格", man(a.P) + "万円", "チラシに載っている価格") +
+    lr("in", "＋ 諸費用", man(a.C) + "万円", "物件価格の7%。仲介手数料・登記・ローンの手数料・火災保険など") +
+    lr("tot", "＝ 必要なお金", man(a.P + a.C) + "万円") +
+    lr("part", "　うち 住宅ローン", man(a.L) + "万円", "家計から計算した借入目安の範囲") +
+    lr("part", "　うち 貯金から", man(a.own) + "万円", "頭金" + man(a.down) + "万円＋諸費用" + man(a.C - a.costLoan) + "万円") +
+    lr("in", "買った後に残る貯金", man(a.left) + "万円", "生活防衛資金" + man(a.reserve) + "万円（生活費＋返済＋維持費の6か月分）を残します");
+  var w = [], sv = sensOf(b, B0);
+  w.push('<p class="sens">' + (sv.P > 0 ? "生活費が月1万円多いと、目安は約" + man(sv.d) + "万円下がります（約" + man(sv.P) + "万円）。" : "生活費が月1万円多いと、目安が出なくなります。") + "この目安は生活費の入れ方で大きく動きます。少なめに入れていないか確かめてください。</p>");
+  var pct = b.incM > 0 ? Math.round(a.payUp / b.incM * 100) : 0;
+  if (pct > 25) w.push(note(pct > 35 ? "warn" : "amber", "金利" + b.stress + "%のときの返済は、手取り（ボーナス込み）の" + pct + "%です。目安とされる25%を超えています。生活費が少なめに入っていないか確かめてください。"));
+  $("cashWarn").innerHTML = w.join("");
+  $("retire").innerHTML = retireHTML(b, a);
+  $("chain").innerHTML = chainHTML(b, a);
+}
+function chainHTML(b, a){
+  var r = room(b, a.P), maxLoan = PV(Math.max(0, r), b.rUp, b.months);
+  var h = '<div class="chain"><div class="step">① 毎月の収支から → 家計から計算した借入目安</div><div class="ledger">' +
+    lr("in", "手取り（ボーナス込みの月平均）", "月" + yenM(b.incM), "毎月" + n(I.takeM) + "万円＋ボーナス年" + n(I.bonus) + "万円÷12") +
+    lr("out", "生活費（毎月の出費）", "−" + yenM(b.mLiving), "質問4の毎月の出費。保育料や習い事など、今払っている子どもの費用もここに入ります") +
+    (b.yRes > 0 ? lr("out", "年払いに備える取り置き", "−" + yenM(b.yRes), "旅行・車検など年" + man(b.yYear) + "万円を12で割った額") : "") +
+    (b.kidUp > 0 ? lr("out", "今いる子どもの、これから増える費用", "−" + yenM(b.kidUp), kidUpNote() + "。学校・塾・習い事などで、大学費用は含みません") : "") +
+    (b.planOnly > 0 ? lr("out", "予定の子どもの費用", "−" + yenM(b.planOnly), n(I.kidsPlan) + "人×月" + n(I.planPer) + "万円（食費・おむつ・保育料など−児童手当）。今の生活費には入っていない分") : "") +
+    (b.saveC > 0 ? lr("out", "現金の貯金", "−" + yenM(b.saveC), "質問6。教育費や急な出費はここから") : "") +
+    (b.saveN > 0 ? lr("out", "NISAの積立", "−" + yenM(b.saveN), "質問6。教育費や老後の資金はここから") : "") +
+    lr("out", "家の維持費", "−" + yenM(a.maint), "固定資産税・火災保険・" + (I.type === "マンション" ? "管理費と修繕積立金" : "修繕の積立") + "の月割り") +
+    lr("out", "自由費として残す分", "−" + yenM(b.freeMin), "こづかいなど。前提の欄で変えられます") +
+    lr("sum", "返済に回せる額", "月" + yenM(Math.max(0, r))) +
+    lr("res", "→ 家計から計算した借入目安", "最大" + man(maxLoan) + "万円", "金利" + b.stress + "%・" + n(I.years) + "年で、この返済額で返せる借入。金融機関の審査で借りられる額とは別です") + '</div>' +
+    '<div class="step">② 貯蓄から → 諸費用と頭金</div><div class="ledger">' +
+    lr("in", "貯蓄（今の貯金）", man(n(I.cash)) + "万円") +
+    lr("out", "生活防衛資金として残す", "−" + man(a.reserve) + "万円", "（生活費" + yenM(b.living) + "＋返済" + yenM(a.payUp) + "＋維持費" + yenM(a.maint) + "）×6か月。返済は金利" + b.stress + "%で計算。積立は含めません") +
+    lr("out", "諸費用", "−" + man(a.C - a.costLoan) + "万円", a.costLoan > 0 ? "諸費用のうち" + man(a.costLoan) + "万円はローンに含める計算です" : "物件価格の7%") +
+    lr("res", "→ 頭金", man(a.down) + "万円") + '</div>' +
+    '<div class="step">③ 合わせると → 物件価格</div><div class="ledger">' +
+    lr("in", "住宅ローン", man(a.L) + "万円", a.L < maxLoan - 5 ? "借入目安の最大までは使っていません。価格が" + (OUT && OUT.B0.why === "funds" ? "貯金" : "収支") + "で決まっているためです" : "") +
+    lr("in", "＋ 頭金", man(a.down) + "万円") +
+    lr("sum", "＝ 物件価格", "約" + man(a.P) + "万円") + '</div></div>';
+  return h;
+}
+function renderRuler(p0, p1, P, top){
+  var pc = function(v){ return Math.max(0, Math.min(100, v / top * 100)); };
+  var side = function(v){ var x = pc(v); return x < 15 ? ' l" style="--tx:0%;left:' + x + '%' : (x > 85 ? ' r" style="--tx:-100%;left:' + x + '%' : '" style="left:' + x + '%'); };
+  var h = '<div class="rbar"><div style="width:' + pc(p0) + '%;background:var(--z-ok)"></div><div style="width:' + Math.max(0, pc(p1) - pc(p0)) + '%;background:var(--z-amber)"></div><div style="flex:1;background:var(--z-warn)"></div></div>';
+  h += '<div class="rmark' + side(p0) + '"><span>目安 ' + man(p0) + '</span></div>';
+  var gap = pc(p1) - pc(p0);
+  if (p1 > p0 + 5) h += '<div class="rmark' + side(p1) + ';' + (gap < 22 ? 'top:44px;' : '') + '"><span>今の金利なら ' + man(p1) + '</span></div>';
+  h += '<div class="rmark you' + side(P) + '"><span>' + man(P) + '万円</span></div>';
+  $("ruler").innerHTML = h;
+  $("ruler").style.paddingBottom = (p1 > p0 + 5 && gap < 22 ? 52 : 30) + "px";
+}
+function renderCheck(b, a){
+  var ci = $("cost"), li = $("loan");
+  if (document.activeElement !== ci) ci.value = isSet(I.costIn) ? I.costIn : "";
+  if (document.activeElement !== li) li.value = isSet(I.loanIn) ? I.loanIn : "";
+  ci.placeholder = man(costAuto(a.P)); li.placeholder = man(a.La);
+  $("costHint").innerHTML = isSet(I.costIn) ? '見積もりの額で計算しています。<button type="button" class="lnk2" data-auto="cost">物件価格の7%に戻す</button>' : "空欄なら物件価格の7%（" + man(costAuto(a.P)) + "万円）。見積もりがあれば入れてください。";
+  $("loanHint").innerHTML = isSet(I.loanIn) ? '入れた額で計算しています。<button type="button" class="lnk2" data-auto="loan">自動に戻す</button>' : "空欄なら、生活防衛資金を残して貯金を使い、足りない分を借りる額（" + man(a.La) + "万円）。";
+  $("fund").innerHTML = lr("in", "物件価格", man(a.P) + "万円") + lr("in", "＋ 諸費用", man(a.C) + "万円") +
+    lr("tot", "＝ 必要なお金", man(a.P + a.C) + "万円") +
+    lr("part", "　うち 借入", man(a.L) + "万円", a.costLoan > 0 ? "諸費用のうち" + man(a.costLoan) + "万円もローンに含めています" : "") +
+    lr("part", "　うち 貯金から", man(a.own) + "万円", "頭金" + man(a.down) + "万円＋諸費用" + man(a.C - a.costLoan) + "万円") +
+    lr("in", "買った後に残る貯金", man(a.left) + "万円", "必要な生活防衛資金は" + man(a.reserve) + "万円（生活費＋返済＋維持費の6か月分）");
+  var msg = [], z = "ok";
+  if (a.cashShort > 0) { z = "warn"; msg.push("貯金が" + man(a.cashShort) + "万円足りません。借入額を増やすか、物件価格を下げる必要があります。"); }
+  else if (a.resShort > 0) { z = "amber"; msg.push("買った後に残る貯金が、生活防衛資金（" + man(a.reserve) + "万円）より" + man(a.resShort) + "万円少なくなります。"); }
+  if (a.normalUp >= b.freeMin - EPS) { if (z === "ok") msg.unshift("設定した条件では、毎月の収支に収まる目安です（金利" + b.stress + "%でも、自由費" + yenM(b.freeMin) + "を残せます）。"); }
+  else if (a.normal >= b.freeMin - EPS) { if (z === "ok") z = "amber"; msg.unshift("今の金利なら収まりますが、金利が" + b.stress + "%になると自由費" + yenM(b.freeMin) + "を残せません（月" + yenM(a.normalUp) + "）。"); }
+  else { z = "warn"; msg.unshift("設定した条件では、毎月の収支に収まりません（今の金利でも、自由費" + yenM(b.freeMin) + "を残せません）。"); }
+  $("zoneLine").innerHTML = note(z, msg.join(""));
+}
+function renderMonthly(b, a){
+  var out = function(l, v, nt){ return lr("out", l, "−" + yenM(v), nt); };
+  var h = lr("in", "手取り（ボーナス込みの月平均）", yenM(b.incM), "毎月" + n(I.takeM) + "万円＋ボーナス年" + n(I.bonus) + "万円÷12") +
+    out("生活費（毎月の出費）", b.mLiving, "今の子どもの保育料・習い事なども含む") +
+    (b.yRes > 0 ? out("年払いに備える取り置き", b.yRes, "旅行・車検など年" + man(b.yYear) + "万円÷12") : "") +
+    out("住宅ローンの返済", a.pay, "借入" + man(a.L) + "万円・" + n(I.years) + "年・金利" + b.rate + "%") +
+    out("家の維持費", a.maint, "固定資産税（年" + Math.round(a.P * TAX_RATE) + "万円ほど）・火災保険・" + (I.type === "マンション" ? "管理費と修繕積立金" : "修繕の積立")) +
+    (b.kidUp > 0 ? out("今いる子どもの、これから増える費用", b.kidUp, kidUpNote()) : "") +
+    (b.planOnly > 0 ? out("予定の子どもの費用", b.planOnly, n(I.kidsPlan) + "人×月" + n(I.planPer) + "万円（児童手当を差し引いた額）") : "") +
+    (b.saveC > 0 ? out("現金の貯金", b.saveC, "教育費や急な出費に備える分") : "") +
+    (b.saveN > 0 ? out("NISAの積立", b.saveN, "教育費や老後の資金に備える分") : "");
+  var f = a.normal;
+  h += '<div class="free"><b>自由費<br><span style="font-size:12px;font-weight:400;color:var(--ink-2)">毎月好きに使えるお金</span></b><span class="v' + (f < 0 ? " neg" : "") + '">' + (f < 0 ? "▲" : "") + yen(Math.abs(f) * 10000) + '<small>円</small></span></div>';
+  h += '<p class="lfoot">' + (f < 0 ? "毎月この額が足りず、積立を削ることになります。" : "夫婦のこづかいなどは、この額から出す前提です。") + "金利が" + b.stress + "%になると、月" + yenM(a.normalUp) + "になります。ボーナスを12で割って毎月に入れているので、ボーナスの月まで貯金でつなぐ必要があります。</p>";
+  $("ledgerN").innerHTML = h;
+  $("facts").innerHTML =
+    '<div><span>住まいにかかるお金（月）</span><b>家賃' + yenM(n(I.rent)) + ' → ' + yenM(a.pay + a.maint) + '</b></div>' +
+    '<div><span>金利が' + b.stress + '%になると、返済は</span><b>月' + yenM(a.payUp) + '（+' + yenM(a.payUp - a.pay) + '）</b></div>' +
+    '<div><span>返済（金利' + b.stress + '%）は、手取り（ボーナス込み）の</span><b>' + (b.incM > 0 ? Math.round(a.payUp / b.incM * 100) : 0) + '%（目安25%まで）</b></div>' +
+    (function(){ var t = at65(b, a); return '<div><span>払い終わる年齢</span><b>' + ageTxt(t.endAge) + '</b></div>' + (t.age < RET_AGE ? '<div><span>' + RET_AGE + '歳時点のローン残高</span><b>' + man(t.bal) + '万円</b></div>' : ''); })();
+}
+function renderPlist(b){
+  $("plist").innerHTML = [
+    "物件価格の目安は、手取り（ボーナス込みの月平均）で、金利が" + b.stress + "%に上がっても、生活費・年払いの取り置き・現金とNISAの積立・家の維持費を払い、自由費を月" + yenM(b.freeMin) + "残せる価格です。金利は最初から最後まで" + b.stress + "%で計算するので、少しずつ上がる実際の変動金利より厳しめです。",
+    "教育費は、質問6の現金・NISAの積立から出す前提です。積立とは別に教育費を引くと二重に数えることになるため、引いていません。大学などに備えるなら、その分も積立の額に含めてください。",
+    "今いる子どもは、今かかっている費用が質問4の生活費に入っている前提で、これから増える学校・塾・習い事の費用を足します。1人あたり、今が未就学なら月2.5万円、小学生なら月1.5万円、中学生なら月0.5万円、高校以上なら0円です（文部科学省「子供の学習費調査」の公立の学年ごとの費用から、今との差をならした目安）。私立に通わせる予定なら、質問6の積立を増やすか生活費に足してください。",
+    "予定の子どもは、今の生活費に入っていない分として1人あたり月" + n(I.planPer) + "万円を足します。食費・おむつ・衣類・保育料などで増える分から、児童手当（月1万〜1.5万円）を差し引いた目安です。学年が上がって増える塾・習い事や、大学費用は積立から出す前提です。",
+    "大学の入学金・学費は、質問6の現金・NISAの積立から出す前提なので、別には足していません。",
+    "ボーナスは12で割って毎月の手取りに入れています。年払いの出費（旅行・車検など）も12で割った取り置きとして引くので、二重には数えていません。",
+    "生活防衛資金は（生活費＋住宅ローンの返済＋家の維持費）の6か月分で、最低100万円。返済は金利" + b.stress + "%で計算し、現金・NISAの積立は含めません。",
+    "家の維持費：固定資産税は物件価格の年0.3%、火災保険と" + (I.type === "マンション" ? "管理費・修繕積立金で月3.1万円" : "修繕の積立で月1.8万円") + "。諸費用は物件価格（本体価格）の7%。",
+    "返済期間は、80歳までに払い終わる範囲で最長35年。",
+    RET_AGE + "歳の時点の見込み：ローン残高は今の金利のまま返した場合の残り。現金の貯金は、買った後に残る貯金に毎月の積立を足した額（利息なし）。NISAは毎月の積立が年" + n(I.nisaRet) + "%で増えた場合。大学費用は子ども1人" + n(I.uniPer) + "万円（国公立4年間のおおよその目安）を差し引きます。途中で貯金を使う分、退職金、年金は入れていません。",
+    "金融機関の審査で借りられる額や、将来の家計の安全を示すものではありません。",
+    NOT_INCLUDED
+  ].map(function(t){ return "<li>" + t + "</li>"; }).join("");
+}
+
+/* ---------- 物件チェック ---------- */
+var PCHK = [["haz","ハザードマップで、浸水や土砂災害の区域に入っていないか確認しましたか？"],["road","前の道路の幅（4m以上か）と、私道かどうかを知っていますか？"],
+  ["zone","まわりにどんな高さの建物が建ちうるか（用途地域）を知っていますか？"],["touki","登記簿で、売主が本当の持ち主か・担保が残っていないかを見ましたか？"],
+  ["deal","近くの土地が実際にいくらで売れているかを知っていますか？"],["juusetsu","重要事項説明書と契約書の写しを、契約より前にもらって読みましたか？"]];
+function renderChk(){
+  var c = I.chk || {};
+  $("chk").innerHTML = PCHK.map(function(q){ return '<div class="ck"><p>' + q[1] + '</p><div class="seg" role="group">' + ["確認した","わからない"].map(function(s){ return '<button type="button" data-ck="' + q[0] + '" data-st="' + s + '" aria-pressed="' + (c[q[0]] === s) + '">' + s + '</button>'; }).join("") + '</div></div>'; }).join("");
+}
+
+/* ---------- まとめのコピー ---------- */
+function summary(){
+  var L = [], b = base();
+  L.push("【家の予算 申し込み用まとめ】（" + new Date().toLocaleDateString("ja-JP") + "）");
+  L.push("■手取り：月" + n(I.takeM) + "万円／ボーナス年" + n(I.bonus) + "万円（月平均" + yenM(b.incM) + "）");
+  L.push("■今の家賃：月" + n(I.rent) + "万円／生活費：毎月" + (Math.round(b.mLiving * 10) / 10) + "万円＋年払い" + man(b.yYear) + "万円（" + EXP.filter(function(e){ return n(I.exp[e[0]]) > 0; }).map(function(e){ return e[1].replace(/（.*?）/g, "") + n(I.exp[e[0]]) + (e[2] === "y" ? "/年" : ""); }).join("・") + "）／今の貯金：" + n(I.cash) + "万円");
+  L.push("■買った後も続ける積立：現金 月" + n(I.saveCash) + "万円／NISA 月" + n(I.saveNisa) + "万円／残したい自由費 月" + n(I.freeMin) + "万円");
+  L.push("■年齢：" + n(I.age) + "歳／子ども：今" + n(I.kids) + "人（" + (n(I.kids) ? kidUpNote() : "-") + "）・予定" + n(I.kidsPlan) + "人／子どもの増える費用 月" + yenM(base().plan) + "／考えている家：" + I.type);
+  L.push("■金利：今" + b.rate + "%・判定" + b.stress + "%／返済期間" + n(I.years) + "年");
+  if (OUT) {
+    if (OUT.B0.P > 0) {
+      L.push("■物件価格の目安：約" + man(OUT.B0.P) + "万円まで（金利" + b.stress + "%で判定）／今の金利のままなら約" + man(OUT.B1.P) + "万円／生活費が月1万円多いと約" + man(sensOf(b, OUT.B0).P) + "万円");
+    } else L.push("■物件価格の目安：いまの条件では計算できません（" + (OUT.B0.why === "monthly" ? "通常月に返済へ回せる余裕がない" : "貯金が生活防衛資金に足りない") + "）");
+    var a = OUT.aP;
+    L.push("■" + man(a.P) + "万円で確かめた場合：諸費用" + man(a.C) + "万円・借入" + man(a.L) + "万円・貯金から" + man(a.own) + "万円・残る貯金" + man(a.left) + "万円（必要な生活防衛資金" + man(a.reserve) + "万円）");
+    var t6 = at65(b, a);
+    L.push("　払い終わる年齢 " + ageTxt(t6.endAge) + (t6.age < RET_AGE ? "／" + RET_AGE + "歳時点のローン残高 " + man(t6.bal) + "万円・貯金とNISAの見込み（大学費用を引いた後）" + man(t6.net) + "万円" : ""));
+    L.push("　返済 月" + yenM(a.pay) + "（金利" + b.stress + "%で月" + yenM(a.payUp) + "）／自由費 月" + yenM(a.normal) + "（金利" + b.stress + "%で月" + yenM(a.normalUp) + "）");
+  }
+  var c = I.chk || {};
+  var NM = {haz:"ハザード", road:"前の道路", zone:"用途地域", touki:"登記", deal:"取引価格", juusetsu:"重説の写し"};
+  L.push("■物件のこと：" + PCHK.map(function(q){ return NM[q[0]] + "＝" + (c[q[0]] || "未回答"); }).join("、"));
+  L.push("■気になっていること：（ここに書いてください）");
+  return L.join("\n");
+}
+function copySummary(){
+  var t = summary(), box = $("copyBox"), msg = $("copyMsg");
+  box.value = t;
+  var fb = function(){ box.hidden = false; box.focus(); box.select(); msg.textContent = "下の文章を長押しでコピーしてください。"; };
+  try { navigator.clipboard.writeText(t).then(function(){ box.hidden = false; msg.textContent = "コピーしました。LINEやメールに貼り付けて使えます。"; }, fb); } catch (e) { fb(); }
+}
+if (CTA_URL) { $("ctaLink").href = CTA_URL; $("ctaLink").hidden = false; $("ctaState").textContent = ""; }
+
+fill(); render();
+})();
+
+</script>
