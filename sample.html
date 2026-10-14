@@ -117,6 +117,24 @@ td.nw{white-space:nowrap}
 .levers dd small{font-size:11px;font-weight:400;color:var(--ink-3)}
 .levers li.neg .st{color:var(--warn)} .levers li.pos .st{color:var(--ok)}
 .levers dd small.age{display:block}
+h3{font-size:15px;margin:4px 0 0}
+.neutral{font-size:12px;color:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--card)}
+.warns li.ok{border-left-color:var(--ok)}
+.cal{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-left:2px solid var(--line);margin-left:6px}
+.cal li{position:relative;padding:0 0 14px 16px}
+.cal li::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--card);border:2px solid var(--accent)}
+.cal .cw{font-family:var(--f-num);font-size:12px;font-weight:700;color:var(--accent);line-height:1.5}
+.cal .cd{font-weight:700;line-height:1.6}
+.cal .cx{font-size:13px;color:var(--ink-3);line-height:1.6}
+.ask{margin:0;padding-left:1.6em;display:flex;flex-direction:column;gap:10px}
+.ask b{display:block}
+.ask span{font-size:13px;color:var(--ink-3)}
+.decide td span{display:block;font-size:12px;color:var(--ink-3)}
+.decide td.blank{min-width:7em;border-left:1px dashed var(--line)}
+.flist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.flist b{display:block}
+.follow{background:var(--accent-soft);border-color:transparent}
+@media print{body{background:#fff}.back,.btn{display:none}.card,.kpi{break-inside:avoid}}
 
 </style>
 </head>
@@ -134,6 +152,8 @@ td.nw{white-space:nowrap}
     <p class="meta">物件3,980万円・借入4,059万円（35年・変動金利）｜金利は「基本（市場予想）」で試算</p>
     <p class="lead">金利が基本どおりでも、子ども2人が続けて大学に通う時期に預金とNISAが尽き、いちばん深い52歳で1,348万円足りなくなります。物件を500万円下げても47歳で足りなくなるため、効くのは物件価格より収入の側です。妻が2031年から手取り200万円で働けば、95歳まで足りなくなる年はありません。</p>
   </header>
+
+  <p class="neutral">このレポートは判断材料です。物件・保険・ローンは紹介せず、紹介料も受け取りません。</p>
 
   <section class="kpis" aria-label="主な数字">
     <div class="kpi"><span class="k">当初の毎月返済</span><span class="v num">12.3<small>万円/月</small></span><span class="s">実行時の金利1.45%</span></div>
@@ -339,8 +359,58 @@ td.nw{white-space:nowrap}
     </ul>
   </section>
 
+
   <section class="card">
-    <div class="sec"><span class="no">06</span><h2>次にやること</h2></div>
+    <div class="sec"><span class="no">06</span><h2>物件の事実をお金に直す</h2></div>
+    <p>物件のことは、お客さまご自身に調べていただきます（調べ方の手順はお渡しします）。この章では、調べた事実が家計のどこに、いくら効くかを書きます。</p>
+    <h3>調べた事実（見本の仮の値）</h3>
+    <dl class="facts">
+      <dt>ハザード</dt><dd>洪水：浸水の深さ0.5〜3.0m未満の区域／土砂災害：区域外</dd>
+      <dt>接道</dt><dd>南側の公道（幅4.0m）に、間口5.2mで接している</dd>
+      <dt>登記</dt><dd>乙区に売主の抵当権あり。引渡し時に抹消すると重要事項説明書に記載</dd>
+      <dt>近くの成約価格</dt><dd>築10年以内・土地90〜110㎡の戸建で3,500〜4,100万円（直近2年・6件）</dd>
+    </dl>
+    <h3>お金に直すと</h3>
+    <ul class="warns money">
+      <li><b>水災補償は「外すと自己負担」の区域</b>床上まで水が来る深さの区域です。多くの火災保険の水災補償は、床上浸水か地盤面から45cmを超える浸水で支払われるため、外すと修理費は貯金から出すことになります。見積もりの差が年1.2万円（仮）なら、5年契約で6万円の差です。購入直後の現金は200万円なので、外すかどうかはこの額と比べて決めてください。</li>
+      <li class="ok"><b>接道・登記は、金額への影響なし</b>幅4m以上の道に2m以上接しており、建て替えやローンで問題になりやすい条件には当たりません。抵当権は引渡し時の抹消を、決済の日に司法書士に確認してください。</li>
+    </ul>
+    <h3>ローンを返し切れる売却価格</h3>
+    <p class="small">売った代金でローンを返し切るのに必要な価格です。売るときの費用（仲介手数料など）を価格の4%として、年末の残高から逆算しました。将来いくらで売れるかの予想はしません。</p>
+    <div class="tbl"><table>
+      <thead><tr><th>売る時期</th><th class="r">ローン残高</th><th class="r">返し切れる価格</th><th class="r">金利が大きく上がる場合</th></tr></thead>
+      <tbody><tr><th scope="row">5年後<span>2031年</span></th><td class="num">3,691万円</td><td class="num">3,845万円</td><td class="num">3,878万円</td></tr><tr><th scope="row">10年後<span>2036年</span></th><td class="num">3,224万円</td><td class="num">3,359万円</td><td class="num">3,533万円</td></tr><tr><th scope="row">15年後<span>2041年</span></th><td class="num">2,706万円</td><td class="num">2,819万円</td><td class="num">3,057万円</td></tr><tr><th scope="row">20年後<span>2046年</span></th><td class="num">2,133万円</td><td class="num">2,222万円</td><td class="num">2,487万円</td></tr><tr><th scope="row">25年後<span>2051年</span></th><td class="num">1,500万円</td><td class="num">1,562万円</td><td class="num">1,808万円</td></tr></tbody>
+    </table></div>
+    <p class="small">今の近くの成約価格は3,500〜4,100万円（お客さまが調べた値）。5年後に売る場合は、その下限より約345万円高く売れれば返し切れる計算です。</p>
+  </section>
+
+  <section class="card">
+    <div class="sec"><span class="no">07</span><h2>申込から引渡しまでの期限</h2></div>
+    <p>この期間は、期限を過ぎると取れる手がなくなるものが続きます。日付は、お客さまの契約書と重要事項説明書から入れます。</p>
+    <ol class="cal"><li><p class="cw">申込の前</p><p class="cd">事前審査を2つ以上の銀行で受けておく</p><p class="cx">本審査で否決されたときの次の手がなくなる</p></li><li><p class="cw">2026年12月上旬<br>契約</p><p class="cd">重要事項説明書を前日までにもらって読む</p><p class="cx">当日はじめて読むと、その場で質問しきれない</p></li><li><p class="cw">12月中</p><p class="cd">ローンの本審査</p><p class="cx">結果が出るまで、ほかの期限が近づく</p></li><li><p class="cw">2027年1月15日<br>（見本の日付）</p><p class="cd">手付解除の期限。やめるなら、手付金を放棄して解除できる最後の日</p><p class="cx">過ぎると違約金の扱いになることがある（契約書の条文で確認）</p></li><li><p class="cw">2027年1月31日<br>（見本の日付）</p><p class="cd">ローン特約の期限。本審査が通らなかったときに、白紙で解除できる期限</p><p class="cx">過ぎると、否決されても自己負担での解除になることがある</p></li><li><p class="cw">2月中旬</p><p class="cd">今の賃貸に解約を伝える（多くは1か月前）</p><p class="cx">遅れると、家賃が二重にかかる月が増える</p></li><li><p class="cw">2月中旬<br>金消契約</p><p class="cd">金利タイプと団信の特約を最終決定</p><p class="cx">団信はあとから付け替えられない</p></li><li><p class="cw">2月中</p><p class="cd">火災保険の申込（水災補償の有無を決める）</p><p class="cx">引渡し日に間に合わないと、保険のない日ができる</p></li><li><p class="cw">2月下旬<br>内覧会</p><p class="cd">傷・不具合を指摘し、引渡しまでの補修を約束してもらう</p><p class="cx">引渡し後の指摘は対応が遅れやすい</p></li><li><p class="cw">2027年3月中旬<br>引渡し</p><p class="cd">残代金の支払い・鍵の受け取り・登記</p><p class="cx">—</p></li><li><p class="cw">2028年2〜3月</p><p class="cd">住宅ローン控除の確定申告（1年目だけ。2年目からは年末調整）</p><p class="cx">申告しないと、1年目の控除が戻らない</p></li></ol>
+    <p class="small">手付解除・ローン特約の扱いは、契約書の条文が優先です。条文の読み方は、納品後の質問で一緒に確認できます。</p>
+  </section>
+
+  <section class="card">
+    <div class="sec"><span class="no">08</span><h2>申込の前に聞くこと</h2></div>
+    <p>この家と家計から選んだ質問です。答えはメモして、納品後の質問で送ってもらえれば計算に反映します。</p>
+    <h3>営業担当に</h3>
+    <ol class="ask"><li value="1"><b>手付解除の期限は、具体的に何月何日ですか</b><span>「相手方が履行に着手するまで」だけだと、いつまでやめられるかが曖昧なため</span></li><li value="2"><b>ローン特約の期限と、否決されたときの手続きは</b><span>期限を過ぎると、白紙で解除できなくなることがあるため</span></li><li value="3"><b>引渡しが遅れた場合、家賃の二重払いや仮住まいの費用はどうなりますか</b><span>工事の遅れは珍しくなく、費用の負担先が決まっていないことがあるため</span></li><li value="4"><b>諸費用の見積もりの内訳と、実費との差の扱いは</b><span>資金計画の279万円が増えると、手元の現金200万円が減るため</span></li><li value="5"><b>ZEH水準を証明する書類は、引渡し時にもらえますか</b><span>住宅ローン控除の借入限度額（4,500万円）の条件になるため</span></li><li value="6"><b>工事中の写真や検査の記録はもらえますか</b><span>工事中の家は見に行けないことが多く、記録が後から確かめる手段になるため</span></li></ol>
+    <h3>銀行に</h3>
+    <ol class="ask"><li value="7"><b>5年ルール・125%ルールはありますか</b><span>金利が上がったとき、返済額がすぐ変わるか、5年ごとかが決まるため</span></li><li value="8"><b>金利の見直しは年何回で、基準金利はいつ決まりますか</b><span>01章の「基本」「大きく上がる」のどちらに近いかを確かめるため</span></li><li value="9"><b>繰上返済の手数料と、1回の最低額は</b><span>大学費用の前後に返済を軽くできるかに関わるため</span></li><li value="10"><b>団信の保障範囲と、特約を付けた場合の金利の上乗せは</b><span>毎月の返済と保険の見直しを合わせて考えるため</span></li></ol>
+  </section>
+
+  <section class="card">
+    <div class="sec"><span class="no">09</span><h2>夫婦で決めること</h2></div>
+    <p>レポートの前提に置いた想定です。右の欄は、話し合って決めたことを書く場所です。印刷して使えます。</p>
+    <div class="tbl"><table class="decide">
+      <thead><tr><th>決めること</th><th>レポートの前提</th><th>決めたこと</th></tr></thead>
+      <tbody><tr><th scope="row">毎月の返済の上限</th><td>月14万円<span>金利が大きく上がると月16.9万円</span></td><td class="blank"></td></tr><tr><th scope="row">妻の働き方</th><td>パート・手取り年108万円のまま<span>2031年から手取り200万円なら95歳まで回る</span></td><td class="blank"></td></tr><tr><th scope="row">大学の想定</th><td>2人とも私立・自宅通学<span>国立なら、いちばん少ない時の不足が約440万円縮む</span></td><td class="blank"></td></tr><tr><th scope="row">車の買い替え</th><td>10年ごとに200万円<span>2032年・2042年が赤字の時期に重なる</span></td><td class="blank"></td></tr><tr><th scope="row">手元に残す現金</th><td>200万円<span>購入直後はちょうど200万円</span></td><td class="blank"></td></tr><tr><th scope="row">金利が上がったときの対策</th><td>未定<span>繰上返済・支出の見直し・働き方のどれで備えるか</span></td><td class="blank"></td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="card">
+    <div class="sec"><span class="no">10</span><h2>次にやること</h2></div>
     <ol class="todo">
       <li>妻の働き方（いつから・どのくらい）を夫婦で話し、時期と手取りの見込みを決める</li>
       <li>大学の想定（国立か私立か、自宅か下宿か）をすり合わせる</li>
@@ -350,8 +420,18 @@ td.nw{white-space:nowrap}
     </ol>
   </section>
 
+  <section class="card follow">
+    <h2>納品のあと</h2>
+    <ul class="flist">
+      <li><b>14日間、テキストで質問できます</b>レポートの読み方、営業や銀行に聞いた答えの解釈など</li>
+      <li><b>審査の結果が出たら、1回だけ計算し直します</b>金利や借入額が変わったときに、数字を入れ替えた版をお送りします</li>
+      <li><b>いただいた資料は、納品から3か月後に削除します</b></li>
+    </ul>
+  </section>
+
   <footer class="foot">
     <p>このレポートは判断材料です。買う・買わないの結論はお伝えしません。住宅購入ライフプランシートの入力値と1年ごとの計算にもとづく試算で、将来の金利・収入・運用成果を保証するものではありません。金額は物価上昇込みの名目額です。金利の「基本（市場予想）」は2026年10月時点の市場予想をもとにしています。</p>
+    <p>物件・保険・ローンの紹介や、不動産会社・銀行・保険会社への取り次ぎはしません。紹介料も受け取りません。物件の価格の評価や、将来の売却価格の予想はしません。税額は目安で、確定には税務署・税理士への確認が必要です。契約条項の法的な判断はできません。</p>
     <p>作成：かじ｜家を買う前の数字とチェック（AFP）</p>
     <a class="btn" href="./#cta">家の予算いくらまで？に戻る</a>
   </footer>
