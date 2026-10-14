@@ -134,6 +134,12 @@ h3{font-size:15px;margin:4px 0 0}
 .flist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .flist b{display:block}
 .follow{background:var(--accent-soft);border-color:transparent}
+.locked{border-style:dashed}
+.lockbadge{align-self:flex-start;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:2px 10px;margin:0}
+.lockbadge::before{content:"🔒 "}
+.lockbars{display:flex;flex-direction:column;gap:8px}
+.lockbars i{display:block;height:10px;border-radius:5px;background:var(--line)}
+.lockbars i:nth-child(2){width:85%}.lockbars i:nth-child(3){width:60%}
 .pdflink{color:inherit;font-weight:700}
 @page{size:A4;margin:14mm 14mm 16mm}
 @media print{
@@ -162,6 +168,7 @@ h3{font-size:15px;margin:4px 0 0}
   figure>*+*{margin-top:4px}
   figure{break-inside:avoid;page-break-inside:avoid}
   .ask{padding-left:2.2em}
+  .locked{border-top-style:dashed;break-inside:avoid}.lockbars{display:none}.lockbadge{display:inline-block}
   .foot{display:block}.foot>*+*{margin-top:6px}
 }
 
@@ -413,40 +420,32 @@ h3{font-size:15px;margin:4px 0 0}
     <p class="small">今の近くの成約価格は3,500〜4,100万円（お客さまが調べた値）。5年後に売る場合は、その下限より約345万円高く売れれば返し切れる計算です。</p>
   </section>
 
-  <section class="card">
+  <section class="card locked">
     <div class="sec"><span class="no">07</span><h2>申込から引渡しまでの期限</h2></div>
-    <p>この期間は、期限を過ぎると取れる手がなくなるものが続きます。日付は、お客さまの契約書と重要事項説明書から入れます。</p>
-    <ol class="cal"><li><p class="cw">申込の前</p><p class="cd">事前審査を2つ以上の銀行で受けておく</p><p class="cx">本審査で否決されたときの次の手がなくなる</p></li><li><p class="cw">2026年12月上旬<br>契約</p><p class="cd">重要事項説明書を前日までにもらって読む</p><p class="cx">当日はじめて読むと、その場で質問しきれない</p></li><li><p class="cw">12月中</p><p class="cd">ローンの本審査</p><p class="cx">結果が出るまで、ほかの期限が近づく</p></li><li><p class="cw">2027年1月15日<br>（見本の日付）</p><p class="cd">手付解除の期限。やめるなら、手付金を放棄して解除できる最後の日</p><p class="cx">過ぎると違約金の扱いになることがある（契約書の条文で確認）</p></li><li><p class="cw">2027年1月31日<br>（見本の日付）</p><p class="cd">ローン特約の期限。本審査が通らなかったときに、白紙で解除できる期限</p><p class="cx">過ぎると、否決されても自己負担での解除になることがある</p></li><li><p class="cw">2月中旬</p><p class="cd">今の賃貸に解約を伝える（多くは1か月前）</p><p class="cx">遅れると、家賃が二重にかかる月が増える</p></li><li><p class="cw">2月中旬<br>金消契約</p><p class="cd">金利タイプと団信の特約を最終決定</p><p class="cx">団信はあとから付け替えられない</p></li><li><p class="cw">2月中</p><p class="cd">火災保険の申込（水災補償の有無を決める）</p><p class="cx">引渡し日に間に合わないと、保険のない日ができる</p></li><li><p class="cw">2月下旬<br>内覧会</p><p class="cd">傷・不具合を指摘し、引渡しまでの補修を約束してもらう</p><p class="cx">引渡し後の指摘は対応が遅れやすい</p></li><li><p class="cw">2027年3月中旬<br>引渡し</p><p class="cd">残代金の支払い・鍵の受け取り・登記</p><p class="cx">—</p></li><li><p class="cw">2028年2〜3月</p><p class="cd">住宅ローン控除の確定申告（1年目だけ。2年目からは年末調整）</p><p class="cx">申告しないと、1年目の控除が戻らない</p></li></ol>
-    <p class="small">手付解除・ローン特約の扱いは、契約書の条文が優先です。条文の読み方は、納品後の質問で一緒に確認できます。</p>
+    <p class="lockbadge">有料レポートでお渡しします</p>
+    <p>あなたの契約書・重要事項説明書の日付で、申込から確定申告まで11項目の期限表を作ります。それぞれに「過ぎるとどうなるか」を付けます。</p>
+    <div class="lockbars" aria-hidden="true"><i></i><i></i><i></i></div>
   </section>
 
-  <section class="card">
+  <section class="card locked">
     <div class="sec"><span class="no">08</span><h2>申込の前に聞くこと</h2></div>
-    <p>この家と家計から選んだ質問です。答えはメモして、納品後の質問で送ってもらえれば計算に反映します。</p>
-    <h3>営業担当に</h3>
-    <ol class="ask"><li value="1"><b>手付解除の期限は、具体的に何月何日ですか</b><span>「相手方が履行に着手するまで」だけだと、いつまでやめられるかが曖昧なため</span></li><li value="2"><b>ローン特約の期限と、否決されたときの手続きは</b><span>期限を過ぎると、白紙で解除できなくなることがあるため</span></li><li value="3"><b>引渡しが遅れた場合、家賃の二重払いや仮住まいの費用はどうなりますか</b><span>工事の遅れは珍しくなく、費用の負担先が決まっていないことがあるため</span></li><li value="4"><b>諸費用の見積もりの内訳と、実費との差の扱いは</b><span>資金計画の279万円が増えると、手元の現金200万円が減るため</span></li><li value="5"><b>ZEH水準を証明する書類は、引渡し時にもらえますか</b><span>住宅ローン控除の借入限度額（4,500万円）の条件になるため</span></li><li value="6"><b>工事中の写真や検査の記録はもらえますか</b><span>工事中の家は見に行けないことが多く、記録が後から確かめる手段になるため</span></li></ol>
-    <h3>銀行に</h3>
-    <ol class="ask"><li value="7"><b>5年ルール・125%ルールはありますか</b><span>金利が上がったとき、返済額がすぐ変わるか、5年ごとかが決まるため</span></li><li value="8"><b>金利の見直しは年何回で、基準金利はいつ決まりますか</b><span>01章の「基本」「大きく上がる」のどちらに近いかを確かめるため</span></li><li value="9"><b>繰上返済の手数料と、1回の最低額は</b><span>大学費用の前後に返済を軽くできるかに関わるため</span></li><li value="10"><b>団信の保障範囲と、特約を付けた場合の金利の上乗せは</b><span>毎月の返済と保険の見直しを合わせて考えるため</span></li></ol>
+    <p class="lockbadge">有料レポートでお渡しします</p>
+    <p>あなたの家と家計に合わせて、営業担当に6問・銀行に4問。それぞれ「なぜ聞くか」を添えます。</p>
+    <div class="lockbars" aria-hidden="true"><i></i><i></i><i></i></div>
   </section>
 
-  <section class="card">
+  <section class="card locked">
     <div class="sec"><span class="no">09</span><h2>夫婦で決めること</h2></div>
-    <p>レポートの前提に置いた想定です。右の欄は、話し合って決めたことを書く場所です。印刷して使えます。</p>
-    <div class="tbl"><table class="decide">
-      <thead><tr><th>決めること</th><th>レポートの前提</th><th>決めたこと</th></tr></thead>
-      <tbody><tr><th scope="row">毎月の返済の上限</th><td>月14万円<span>金利が大きく上がると月16.9万円</span></td><td class="blank"></td></tr><tr><th scope="row">妻の働き方</th><td>パート・手取り年108万円のまま<span>2031年から手取り200万円なら95歳まで回る</span></td><td class="blank"></td></tr><tr><th scope="row">大学の想定</th><td>2人とも私立・自宅通学<span>国立なら、いちばん少ない時の不足が約440万円縮む</span></td><td class="blank"></td></tr><tr><th scope="row">車の買い替え</th><td>10年ごとに200万円<span>2032年・2042年が赤字の時期に重なる</span></td><td class="blank"></td></tr><tr><th scope="row">手元に残す現金</th><td>200万円<span>購入直後はちょうど200万円</span></td><td class="blank"></td></tr><tr><th scope="row">金利が上がったときの対策</th><td>未定<span>繰上返済・支出の見直し・働き方のどれで備えるか</span></td><td class="blank"></td></tr></tbody>
-    </table></div>
+    <p class="lockbadge">有料レポートでお渡しします</p>
+    <p>レポートの前提と、話し合って決めたことを書き込める1枚。印刷して使えます。</p>
+    <div class="lockbars" aria-hidden="true"><i></i><i></i><i></i></div>
   </section>
 
-  <section class="card">
+  <section class="card locked">
     <div class="sec"><span class="no">10</span><h2>次にやること</h2></div>
-    <ol class="todo">
-      <li>妻の働き方（いつから・どのくらい）を夫婦で話し、時期と手取りの見込みを決める</li>
-      <li>大学の想定（国立か私立か、自宅か下宿か）をすり合わせる</li>
-      <li>毎月の返済の上限（今は月14万円）を、金利が上がったときの月16.9万円と比べて決め直す</li>
-      <li>車の買い替えの時期と金額を、大学費用の時期からずらせるか考える</li>
-      <li>申込の前に、頭金を減らして手元の現金を厚くするかを決める</li>
-    </ol>
+    <p class="lockbadge">有料レポートでお渡しします</p>
+    <p>計算の結果から、申込の前にやることを順番に並べます。</p>
+    <div class="lockbars" aria-hidden="true"><i></i><i></i><i></i></div>
   </section>
 
   <section class="card follow">
