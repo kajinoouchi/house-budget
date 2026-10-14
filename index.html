@@ -45,6 +45,10 @@ button{font:inherit;cursor:pointer;color:inherit}
 .num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
 .eyebrow{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700}
 .lead{color:var(--ink-2)}
+.trust{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink-2)}
+.trust li{display:flex;gap:8px;align-items:flex-start;line-height:1.55}
+.trust .ti{flex:0 0 auto;width:18px;text-align:center}
+.qtime{font-size:14px;font-weight:400;color:var(--ink-3);margin-left:4px}
 .sub{font-size:13px;color:var(--ink-2)}
 .tiny{font-size:12px;color:var(--ink-3)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
@@ -205,11 +209,16 @@ details.more[open]{gap:12px}
     <div class="eyebrow">家を買う前の数字とチェック</div>
     <h1>家の予算いくらまで？</h1>
     <p class="lead">収入・支出・貯蓄の3つから、あなたの家計で考える物件価格の目安と、買った後に毎月いくら残るかを出します。物件が決まっていなくても大丈夫です。</p>
+    <ul class="trust">
+      <li><span class="ti" aria-hidden="true">🔒</span><span>入力した数字はどこにも送信されません。この端末の中だけで計算します。</span></li>
+      <li><span class="ti" aria-hidden="true">⏱</span><span>9つの質問・約3分。登録は不要です。</span></li>
+      <li><span class="ti" aria-hidden="true">🏠</span><span>家を契約したパパ・かじが、自分の予算を決めるために作りました。</span></li>
+    </ul>
     <div class="sample" id="sampleBar"><span id="sampleText"></span><button class="btn sm" id="clearBtn" type="button">空にして入力する</button><button class="btn sm" id="resetBtn" type="button">例に戻す</button></div>
   </header>
 
   <section class="card" aria-labelledby="qTitle">
-    <h2 id="qTitle">9つの質問</h2>
+    <h2 id="qTitle">9つの質問<span class="qtime">（約3分）</span></h2>
     <p class="sub">だいたいの数字で大丈夫です。金額はすべて「万円」で入れてください（3.5万円なら3.5）。結果は、毎月のお金は「円」、物件価格や貯金は「万円」で出します。</p>
     <div class="qs">
       <div class="qg">収入</div>
