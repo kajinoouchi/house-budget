@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="申込前 家計×物件チェックレポートの見本（架空の家族・物件で作成）">
+<title>レポートの見本</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDGothic:wght@400;700&family=BIZ+UDPGothic:wght@400;700&display=swap">
+<style>
+:root{
+  --paper:#f3f5f9; --card:#ffffff; --ink:#14243a; --ink-2:#4b5b72; --ink-3:#6b788b;
+  --line:#d8dfe9; --accent:#23497f; --accent-soft:#e6edf7;
+  --ok:#1b7442; --ok-bg:#e3f3e9; --amber:#9a5b00; --amber-bg:#fdf0d9; --warn:#b3261e; --warn-bg:#fbe7e5;
+  --c-acc:#2f5fa3; --c-ok:#1f8a4c; --c-warn:#c0392b; --bar-pos:#8fb4e3; --bar-neg:#ef9b93;
+  --f-body:"BIZ UDPGothic","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  --f-num:"BIZ UDGothic","Hiragino Sans","Noto Sans JP",ui-monospace,monospace;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f141b; --card:#18202a; --ink:#e7edf5; --ink-2:#aab6c7; --ink-3:#8794a6;
+  --line:#2b3644; --accent:#9cbcf0; --accent-soft:#1e2c40;
+  --ok:#62c98f; --ok-bg:#16301f; --amber:#f0b45a; --amber-bg:#33270f; --warn:#ff8f86; --warn-bg:#3a1a18;
+  --c-acc:#8fb4f0; --c-ok:#62c98f; --c-warn:#ff8f86; --bar-pos:#3d5f8f; --bar-neg:#8c3a33; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#0f141b; --card:#18202a; --ink:#e7edf5; --ink-2:#aab6c7; --ink-3:#8794a6;
+  --line:#2b3644; --accent:#9cbcf0; --accent-soft:#1e2c40;
+  --ok:#62c98f; --ok-bg:#16301f; --amber:#f0b45a; --amber-bg:#33270f; --warn:#ff8f86; --warn-bg:#3a1a18;
+  --c-acc:#8fb4f0; --c-ok:#62c98f; --c-warn:#ff8f86; --bar-pos:#3d5f8f; --bar-neg:#8c3a33; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.75;-webkit-text-size-adjust:100%}
+.wrap{max-width:640px;margin:0 auto;padding:16px 16px 48px;display:flex;flex-direction:column;gap:16px}
+h1,h2{margin:0;line-height:1.4;text-wrap:balance}
+h1{font-size:24px} h2{font-size:18px}
+p{margin:0}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.back{font-size:13px;color:var(--accent);text-decoration:none}
+.sample-note{background:var(--amber-bg);color:var(--amber);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.6}
+.head{display:flex;flex-direction:column;gap:10px}
+.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+.meta{font-size:12px;color:var(--ink-3)}
+.lead{color:var(--ink-2)}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .k{font-size:12px;color:var(--ink-2)}
+.kpi .v{font-size:26px;font-weight:700;line-height:1.25}
+.kpi .v small{font-size:13px;font-weight:400;margin-left:2px;color:var(--ink-2)}
+.kpi .s{font-size:12px;color:var(--ink-3)}
+.kpi .s.ok{color:var(--ok)} .kpi .s.amber{color:var(--amber)}
+.warn{color:var(--warn)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.sec{display:flex;align-items:baseline;gap:10px}
+.no{font-family:var(--f-num);font-size:13px;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:1px 7px}
+.points,.todo{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+.points b,.warns b{display:block}
+.warns{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.warns li{border-left:3px solid var(--amber);padding-left:10px}
+.facts{display:grid;grid-template-columns:7em 1fr;gap:8px 12px;margin:0;font-size:14px}
+.facts dt{color:var(--ink-2);font-weight:700}
+.facts dd{margin:0}
+@media (max-width:420px){.facts{grid-template-columns:1fr;gap:2px}.facts dd{margin-bottom:8px}}
+figure{margin:0;display:flex;flex-direction:column;gap:6px}
+figcaption{font-size:12px;color:var(--ink-2)}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .zero{stroke:var(--ink-3);stroke-width:1.2}
+.chart .ref{stroke:var(--c-acc);stroke-width:1.5;stroke-dasharray:4 4}
+.chart text{font-family:var(--f-num);font-size:12px;fill:var(--ink-3)}
+.chart .yl{text-anchor:end}
+.chart .xl{text-anchor:middle}
+.chart .ln{fill:none;stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round}
+.chart .ln.acc{stroke:var(--c-acc)} .chart .ln.ok{stroke:var(--c-ok)} .chart .ln.warn{stroke:var(--c-warn)}
+.chart .lab{font-family:var(--f-body);font-size:12px;font-weight:700}
+.chart .lab.acc{fill:var(--c-acc)} .chart .lab.ok{fill:var(--c-ok)} .chart .lab.warn{fill:var(--c-warn)}
+.chart .labv{fill:var(--ink-2)}
+.chart .note-t{fill:var(--c-warn);font-family:var(--f-body);font-size:12px;font-weight:700}
+.chart .bpos{fill:var(--bar-pos)} .chart .bneg{fill:var(--bar-neg)}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:0}
+th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+thead th{font-size:12px;color:var(--ink-2);font-weight:700}
+td.num{text-align:right;white-space:nowrap}
+tbody th{font-weight:700}
+.levers tbody th span{display:block;font-weight:400;font-size:12px;color:var(--ink-3)}
+.levers td small,td small{font-size:11px;color:var(--ink-3);margin-left:1px}
+.levers tr.pos td:nth-child(3){color:var(--ok);font-weight:700}
+.levers tr.neg td:nth-child(3){color:var(--warn);font-weight:700}
+.small{font-size:13px;color:var(--ink-2)}
+.foot{font-size:12px;color:var(--ink-3);display:flex;flex-direction:column;gap:8px}
+.btn{align-self:flex-start;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:7px 16px;font-size:14px;font-weight:700;text-decoration:none;margin-top:6px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.chart text{font-size:11px}
+.chart .note-t{font-size:11px}
+.legend{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink-2)}
+.legend li{display:flex;align-items:center;gap:6px}
+.legend b{font-weight:700;color:var(--ink)}
+.sw{display:inline-block;width:18px;height:0;border-top:3px solid var(--c-acc)}
+.sw.ok{border-color:var(--c-ok)} .sw.warn{border-color:var(--c-warn)} .sw.acc{border-color:var(--c-acc)}
+.sw.dash{border-top-style:dashed}
+.sw.bar{width:10px;height:10px;border:0;border-radius:2px}
+.sw.bar.pos{background:var(--bar-pos)} .sw.bar.neg{background:var(--bar-neg)}
+th.r{text-align:right}
+tbody th span{display:block;font-weight:400;font-size:12px;color:var(--ink-3)}
+td.nw{white-space:nowrap}
+.levers{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.levers li{border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.levers li.pos{border-left-color:var(--ok)}
+.levers .lt{font-weight:700}
+.levers .ln2{font-size:12px;color:var(--ink-3);margin-top:-4px}
+.levers dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0}
+.levers dl div{min-width:0}
+.levers dt{font-size:11px;color:var(--ink-3)}
+.levers dd{margin:0;font-size:14px;font-weight:700;white-space:nowrap}
+.levers dd small{font-size:11px;font-weight:400;color:var(--ink-3)}
+.levers li.neg .st{color:var(--warn)} .levers li.pos .st{color:var(--ok)}
+.levers dd small.age{display:block}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="./">← 家の予算いくらまで？に戻る</a>
+
+  <div class="sample-note" role="note">
+    <b>これは見本です。</b>アプリに入っている「例の家族」（手取り月38万円・貯金700万円・子ども2人）と、架空の物件で作っています。実際のレポートは、質問票の答えと資料をもとに、あなたの家族と物件で作ります。
+  </div>
+
+  <header class="head">
+    <div class="eyebrow">申込前 家計×物件チェックレポート（見本）</div>
+    <h1>このままの計画では、46歳で手元のお金が足りなくなる</h1>
+    <p class="meta">物件3,980万円・借入4,059万円（35年・変動金利）｜金利は「基本（市場予想）」で試算</p>
+    <p class="lead">金利が基本どおりでも、子ども2人が続けて大学に通う時期に預金とNISAが尽き、いちばん深い52歳で1,348万円足りなくなります。物件を500万円下げても47歳で足りなくなるため、効くのは物件価格より収入の側です。妻が2031年から手取り200万円で働けば、95歳まで足りなくなる年はありません。</p>
+  </header>
+
+  <section class="kpis" aria-label="主な数字">
+    <div class="kpi"><span class="k">当初の毎月返済</span><span class="v num">12.3<small>万円/月</small></span><span class="s">実行時の金利1.45%</span></div>
+    <div class="kpi"><span class="k">返済負担率</span><span class="v num">22<small>%</small></span><span class="s ok">目安25%以内</span></div>
+    <div class="kpi"><span class="k">住居費の負担</span><span class="v num">28<small>%</small></span><span class="s amber">手取り比・目安25%を超える</span></div>
+    <div class="kpi"><span class="k">お金が足りなくなる年齢</span><span class="v num warn">46<small>歳</small></span><span class="s">2040年・297万円の不足</span></div>
+  </section>
+
+  <section class="card">
+    <h2>要点は3つ</h2>
+    <ol class="points">
+      <li><b>ローンの返済そのものは、目安の範囲で始まる</b>当初の毎月返済は12.3万円。返済負担率22%・年収倍率5.9倍で、どちらも目安内です。ただし固定資産税・修繕の積立・火災保険まで含めた住居費は、手取りの28%になります。</li>
+      <li><b>山場は、子ども2人が続けて大学に通う2040〜2046年</b>子どもの費用は年582万円（2043年）まで増えます。その前の2032年から毎年の家計が赤字になり、2040年に預金とNISAが尽きます。</li>
+      <li><b>分かれ目は、物件価格より妻の働き方</b>物件を3,480万円に下げても47歳で足りなくなります。妻が2031年4月から手取り200万円で働けば、いちばん少ない49歳でも128万円残ります。金利が大きく上がる場合は、大学を国立にする想定まで組み合わせると足りなくなる年がなくなります。</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>試算の前提</h2>
+    <dl class="facts">
+      <dt>家族</dt><dd>夫32歳・妻31歳、子1（2021年6月生まれ）・子2（2024年9月生まれ）</dd>
+      <dt>夫の手取り</dt><dd>年428万円（うち賞与80万円・昇給年1%）。65歳で退職、退職金800万円・年金年180万円</dd>
+      <dt>妻の手取り</dt><dd>年108万円（パート）。年金年70万円</dd>
+      <dt>今の家計</dt><dd>家賃11万円。家賃以外の生活費は月約20万円（年払いの旅行・車検などを含む）</dd>
+      <dt>物件・借入</dt><dd>新築戸建3,980万円（ZEH水準）、頭金200万円、諸費用279万円は借入に含める。借入4,059万円・35年・変動金利（5年ルール／125%ルールあり）</dd>
+      <dt>金利</dt><dd>基本：実行時1.45% → 2027年10月1.70% → 毎年+0.25% → 上限2.0%。比較用の「大きく上がる」は上限3.5%</dd>
+      <dt>購入後の費用</dt><dd>固定資産税 年11万円、戸建の修繕積立 月1.5万円、火災保険 年2万円</dd>
+      <dt>貯金・運用</dt><dd>預金550万円・NISA150万円。積立は年36万円（60歳まで）、想定利回り年3%、生活防衛資金200万円</dd>
+      <dt>教育</dt><dd>2人とも高校まで公立、大学は私立・自宅通学。将来の金額は物価上昇（年2%）込み</dd>
+      <dt>車</dt><dd>10年ごとに200万円で買い替え（2032・2042・2052年）</dd>
+    </dl>
+  </section>
+
+  <section class="card">
+    <div class="sec"><span class="no">01</span><h2>住宅ローンと金利</h2></div>
+    <p>当初の返済は月12.3万円。基本の金利でも2032年の返済額の見直しで月13.6万円に上がります。金利が大きく上がる場合は、2037年の見直しから月16.9万円になり、ご家族が決めた上限（月14万円）を超えます。</p>
+    <figure>
+      <figcaption id="t01">毎月の住宅ローン返済（その年の平均・万円/月）</figcaption>
+      <ul class="legend"><li><i class="sw acc"></i>基本（市場予想）<b class="num">最大 13.6万円</b></li><li><i class="sw warn"></i>金利が大きく上がる<b class="num">最大 16.9万円</b></li></ul>
+      <svg viewBox="0 0 360 230" role="img" aria-labelledby="t01" class="chart">
+<desc>毎月の住宅ローン返済。基本は2032年に13.6万円、金利が大きく上がる場合は2037年に16.9万円まで上がり、完済まで続く。</desc>
+<line x1="44" x2="348" y1="206.0" y2="206.0" class="zero"/>
+<text x="38" y="210.0" class="yl">0</text>
+<line x1="44" x2="348" y1="157.0" y2="157.0" class="grid"/>
+<text x="38" y="161.0" class="yl">5</text>
+<line x1="44" x2="348" y1="108.0" y2="108.0" class="grid"/>
+<text x="38" y="112.0" class="yl">10</text>
+<line x1="44" x2="348" y1="59.0" y2="59.0" class="grid"/>
+<text x="38" y="63.0" class="yl">15</text>
+<line x1="44" x2="348" y1="10.0" y2="10.0" class="grid"/>
+<text x="38" y="14.0" class="yl">20</text>
+<text x="44.0" y="226" class="xl">2027</text>
+<text x="130.9" y="226" class="xl">2037</text>
+<text x="217.7" y="226" class="xl">2047</text>
+<text x="304.6" y="226" class="xl">2057</text>
+<path d="M44.0,85.2 L52.7,85.2 L61.4,85.2 L70.1,85.2 L78.7,85.2 L87.4,62.8 L96.1,58.3 L104.8,58.3 L113.5,58.3 L122.2,58.3 L130.9,43.2 L139.5,40.1 L148.2,40.1 L156.9,40.1 L165.6,40.1 L174.3,40.1 L183.0,40.1 L191.7,40.1 L200.3,40.1 L209.0,40.1 L217.7,40.1 L226.4,40.1 L235.1,40.1 L243.8,40.1 L252.5,40.1 L261.1,40.1 L269.8,40.1 L278.5,40.1 L287.2,40.1 L295.9,40.1 L304.6,40.1 L313.3,40.1 L321.9,40.1 L330.6,40.1 L339.3,40.1 L348.0,40.1" class="ln warn"/>
+<path d="M44.0,85.2 L52.7,85.2 L61.4,85.2 L70.1,85.2 L78.7,85.2 L87.4,74.8 L96.1,72.7 L104.8,72.7 L113.5,72.7 L122.2,72.7 L130.9,72.7 L139.5,72.7 L148.2,72.7 L156.9,72.7 L165.6,72.7 L174.3,72.7 L183.0,72.7 L191.7,72.7 L200.3,72.7 L209.0,72.7 L217.7,72.7 L226.4,72.7 L235.1,72.7 L243.8,72.7 L252.5,72.7 L261.1,72.7 L269.8,72.7 L278.5,72.7 L287.2,72.7 L295.9,72.7 L304.6,72.7 L313.3,72.7 L321.9,72.7 L330.6,72.7 L339.3,72.7 L348.0,72.7" class="ln acc"/>
+</svg>
+    </figure>
+    <div class="tbl"><table>
+      <thead><tr><th>金利の想定</th><th class="r">最大の毎月返済</th><th class="r">利息の合計</th><th class="r">95歳時点の資産</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">基本<span>上限2.0%</span></th><td class="num">13.6万円</td><td class="num">1,576万円</td><td class="num">389万円</td></tr>
+        <tr><th scope="row">大きく上がる<span>上限3.5%</span></th><td class="num">16.9万円</td><td class="num">2,663万円</td><td class="num warn">−1,757万円</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small">完済は68歳。65歳の退職時にローンが346万円残ります（大きく上がる場合は423万円）。</p>
+  </section>
+
+  <section class="card">
+    <div class="sec"><span class="no">02</span><h2>家計の推移</h2></div>
+    <p>購入した翌年は月3.7万円の黒字ですが、車を買い替える2032年から毎年の家計が赤字になります。子どもが高校生になる2037〜2039年は、年106〜126万円の赤字です。</p>
+    <figure>
+      <figcaption id="t02">毎年貯められる額（大学費用・車などの大きな支出を除いた家計の黒字・万円/年）</figcaption>
+      <ul class="legend"><li><i class="sw bar pos"></i>黒字</li><li><i class="sw bar neg"></i>赤字</li><li><i class="sw acc dash"></i>予定の積立<b class="num">年36万円</b></li></ul>
+      <svg viewBox="0 0 360 230" role="img" aria-labelledby="t02" class="chart">
+<desc>毎年貯められる額（大きな支出を除いた家計の黒字）。2032年から赤字になり、2037〜2039年は年100万円を超える赤字。</desc>
+<line x1="44" x2="348" y1="206.0" y2="206.0" class="grid"/>
+<text x="38" y="210.0" class="yl">-150</text>
+<line x1="44" x2="348" y1="181.5" y2="181.5" class="grid"/>
+<text x="38" y="185.5" class="yl">-100</text>
+<line x1="44" x2="348" y1="157.0" y2="157.0" class="grid"/>
+<text x="38" y="161.0" class="yl">-50</text>
+<line x1="44" x2="348" y1="132.5" y2="132.5" class="zero"/>
+<text x="38" y="136.5" class="yl">0</text>
+<line x1="44" x2="348" y1="108.0" y2="108.0" class="grid"/>
+<text x="38" y="112.0" class="yl">50</text>
+<line x1="44" x2="348" y1="83.5" y2="83.5" class="grid"/>
+<text x="38" y="87.5" class="yl">100</text>
+<line x1="44" x2="348" y1="59.0" y2="59.0" class="grid"/>
+<text x="38" y="63.0" class="yl">150</text>
+<line x1="44" x2="348" y1="34.5" y2="34.5" class="grid"/>
+<text x="38" y="38.5" class="yl">200</text>
+<line x1="44" x2="348" y1="10.0" y2="10.0" class="grid"/>
+<text x="38" y="14.0" class="yl">250</text>
+<text x="53.5" y="226" class="xl">2027</text>
+<text x="148.5" y="226" class="xl">2037</text>
+<text x="243.5" y="226" class="xl">2047</text>
+<text x="338.5" y="226" class="xl">2057</text>
+<rect x="40.7" y="93.2" width="6.6" height="39.3" rx="1.5" class="bpos"/>
+<rect x="50.2" y="94.1" width="6.6" height="38.4" rx="1.5" class="bpos"/>
+<rect x="59.7" y="110.8" width="6.6" height="21.7" rx="1.5" class="bpos"/>
+<rect x="69.2" y="115.6" width="6.6" height="16.9" rx="1.5" class="bpos"/>
+<rect x="78.7" y="116.3" width="6.6" height="16.2" rx="1.5" class="bpos"/>
+<rect x="88.2" y="131.4" width="6.6" height="1.1" rx="1.5" class="bpos"/>
+<rect x="97.7" y="132.5" width="6.6" height="11.6" rx="1.5" class="bneg"/>
+<rect x="107.2" y="132.5" width="6.6" height="13.9" rx="1.5" class="bneg"/>
+<rect x="116.7" y="132.5" width="6.6" height="26.1" rx="1.5" class="bneg"/>
+<rect x="126.2" y="132.5" width="6.6" height="31.6" rx="1.5" class="bneg"/>
+<rect x="135.7" y="132.5" width="6.6" height="33.2" rx="1.5" class="bneg"/>
+<rect x="145.2" y="132.5" width="6.6" height="51.7" rx="1.5" class="bneg"/>
+<rect x="154.7" y="132.5" width="6.6" height="59.1" rx="1.5" class="bneg"/>
+<rect x="164.2" y="132.5" width="6.6" height="61.7" rx="1.5" class="bneg"/>
+<rect x="173.7" y="132.5" width="6.6" height="39.4" rx="1.5" class="bneg"/>
+<rect x="183.2" y="132.5" width="6.6" height="28.5" rx="1.5" class="bneg"/>
+<rect x="192.7" y="132.5" width="6.6" height="30.0" rx="1.5" class="bneg"/>
+<rect x="202.2" y="123.1" width="6.6" height="9.4" rx="1.5" class="bpos"/>
+<rect x="211.7" y="81.8" width="6.6" height="50.7" rx="1.5" class="bpos"/>
+<rect x="221.2" y="73.2" width="6.6" height="59.3" rx="1.5" class="bpos"/>
+<rect x="230.7" y="73.4" width="6.6" height="59.1" rx="1.5" class="bpos"/>
+<rect x="240.2" y="46.8" width="6.6" height="85.7" rx="1.5" class="bpos"/>
+<rect x="249.7" y="33.9" width="6.6" height="98.6" rx="1.5" class="bpos"/>
+<rect x="259.2" y="33.4" width="6.6" height="99.1" rx="1.5" class="bpos"/>
+<rect x="268.7" y="33.0" width="6.6" height="99.5" rx="1.5" class="bpos"/>
+<rect x="278.2" y="32.4" width="6.6" height="100.1" rx="1.5" class="bpos"/>
+<rect x="287.7" y="32.0" width="6.6" height="100.5" rx="1.5" class="bpos"/>
+<rect x="297.2" y="31.6" width="6.6" height="100.9" rx="1.5" class="bpos"/>
+<rect x="306.7" y="31.1" width="6.6" height="101.4" rx="1.5" class="bpos"/>
+<rect x="316.2" y="30.8" width="6.6" height="101.7" rx="1.5" class="bpos"/>
+<rect x="325.7" y="30.4" width="6.6" height="102.1" rx="1.5" class="bpos"/>
+<rect x="335.2" y="30.1" width="6.6" height="102.4" rx="1.5" class="bpos"/>
+<rect x="344.7" y="29.9" width="6.6" height="102.6" rx="1.5" class="bpos"/>
+<line x1="44" x2="348" y1="114.9" y2="114.9" class="ref"/>
+</svg>
+    </figure>
+    <div class="tbl"><table>
+      <thead><tr><th>時期</th><th>西暦（夫の年齢）</th><th>毎月の収支</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">購入した翌年</th><td class="nw">2028年（34歳）</td><td class="num ">+3.7万円</td></tr><tr><th scope="row">家計がいちばん苦しい年（退職前）</th><td class="nw">2039年（45歳）</td><td class="num warn">−10.5万円</td></tr><tr><th scope="row">子どもの費用がいちばん多い年</th><td class="nw">2043年（49歳）</td><td class="num ">+1.6万円</td></tr><tr><th scope="row">退職した翌年</th><td class="nw">2060年（66歳）</td><td class="num warn">−7.8万円</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small">毎月の収支は、その年の収入−支出を12で割った月平均（積立の前）。購入時の支出・大学費用・車の買い替えは除いています。予定の積立（年36万円）は、2032〜2053年の22年間続けられません。</p>
+  </section>
+
+  <section class="card">
+    <div class="sec"><span class="no">03</span><h2>資産の推移</h2></div>
+    <p>このままだと46歳で預金とNISAがマイナスになり、52歳で1,348万円まで足りなくなります。子どもが独立した後に持ち直しますが、95歳時点の残りは389万円です。妻が働き方を変えると、同じ物件でも95歳時点で約1.1億円残ります。</p>
+    <figure>
+      <figcaption id="t03">総資産（預金＋NISA・万円）。夫の年齢別、物価上昇込みの金額</figcaption>
+      <ul class="legend"><li><i class="sw ok"></i>妻が働き方を変える<b class="num">10,942万円</b></li><li><i class="sw ok dash"></i>同・金利が大きく上がる<b class="num">8,669万円</b></li><li><i class="sw acc"></i>このまま<b class="num">389万円</b></li><li><i class="sw warn dash"></i>このまま・金利が大きく上がる<b class="num">−1,757万円</b></li></ul>
+      <svg viewBox="0 0 360 230" role="img" aria-labelledby="t03" class="chart">
+<desc>総資産（預金＋NISA）の推移。このままだと46歳でマイナスになり52歳で−1,348万円。妻が働き方を変えると95歳時点で約1億円。</desc>
+<line x1="44" x2="348" y1="206.0" y2="206.0" class="grid"/>
+<text x="38" y="210.0" class="yl">-3,000</text>
+<line x1="44" x2="348" y1="166.8" y2="166.8" class="zero"/>
+<text x="38" y="170.8" class="yl">0</text>
+<line x1="44" x2="348" y1="127.6" y2="127.6" class="grid"/>
+<text x="38" y="131.6" class="yl">3,000</text>
+<line x1="44" x2="348" y1="88.4" y2="88.4" class="grid"/>
+<text x="38" y="92.4" class="yl">6,000</text>
+<line x1="44" x2="348" y1="49.2" y2="49.2" class="grid"/>
+<text x="38" y="53.2" class="yl">9,000</text>
+<line x1="44" x2="348" y1="10.0" y2="10.0" class="grid"/>
+<text x="38" y="14.0" class="yl">12,000</text>
+<text x="58.5" y="226" class="xl">35歳</text>
+<text x="106.7" y="226" class="xl">45歳</text>
+<text x="155.0" y="226" class="xl">55歳</text>
+<text x="203.2" y="226" class="xl">65歳</text>
+<text x="251.5" y="226" class="xl">75歳</text>
+<text x="299.7" y="226" class="xl">85歳</text>
+<text x="348.0" y="226" class="xl">95歳</text>
+<path d="M44.0,157.1 L48.8,159.1 L53.7,158.4 L58.5,157.7 L63.3,157.1 L68.1,156.0 L73.0,157.6 L77.8,156.6 L82.6,155.8 L87.4,155.2 L92.3,154.6 L97.1,154.5 L101.9,154.5 L106.7,154.5 L111.6,157.1 L116.4,158.0 L121.2,161.7 L126.0,165.1 L130.9,164.2 L135.7,163.0 L140.5,161.9 L145.3,158.1 L150.2,153.7 L155.0,149.2 L159.8,144.6 L164.6,139.7 L169.5,137.4 L174.3,132.2 L179.1,126.9 L183.9,121.4 L188.8,115.7 L193.6,109.8 L198.4,103.7 L203.2,90.9 L208.1,89.9 L212.9,88.9 L217.7,86.1 L222.5,83.0 L227.4,79.9 L232.2,77.7 L237.0,76.2 L241.8,74.7 L246.7,73.2 L251.5,71.1 L256.3,69.0 L261.1,66.9 L266.0,64.7 L270.8,62.6 L275.6,60.4 L280.4,58.2 L285.3,55.9 L290.1,53.7 L294.9,51.4 L299.7,49.1 L304.6,46.7 L309.4,44.3 L314.2,41.9 L319.0,39.4 L323.9,36.9 L328.7,34.4 L333.5,31.8 L338.3,29.2 L343.2,26.5 L348.0,23.8" class="ln ok"/>
+<path d="M44.0,157.1 L48.8,159.1 L53.7,158.4 L58.5,157.7 L63.3,157.1 L68.1,156.0 L73.0,157.8 L77.8,157.0 L82.6,156.5 L87.4,156.1 L92.3,155.7 L97.1,156.1 L101.9,156.6 L106.7,157.2 L111.6,160.4 L116.4,162.0 L121.2,166.2 L126.0,170.2 L130.9,169.8 L135.7,169.2 L140.5,168.6 L145.3,165.3 L150.2,161.7 L155.0,158.0 L159.8,154.1 L164.6,150.1 L169.5,148.5 L174.3,144.3 L179.1,139.8 L183.9,135.2 L188.8,130.5 L193.6,125.5 L198.4,120.4 L203.2,108.5 L208.1,108.2 L212.9,107.9 L217.7,105.5 L222.5,102.6 L227.4,99.7 L232.2,97.6 L237.0,96.3 L241.8,95.0 L246.7,93.7 L251.5,91.8 L256.3,89.9 L261.1,88.0 L266.0,86.1 L270.8,84.2 L275.6,82.2 L280.4,80.3 L285.3,78.4 L290.1,76.4 L294.9,74.5 L299.7,72.6 L304.6,70.6 L309.4,68.7 L314.2,66.8 L319.0,64.9 L323.9,63.0 L328.7,61.1 L333.5,59.2 L338.3,57.3 L343.2,55.4 L348.0,53.5" class="ln ok" stroke-dasharray="5 4"/>
+<path d="M44.0,157.1 L48.8,159.1 L53.7,158.4 L58.5,157.7 L63.3,157.1 L68.1,156.9 L73.0,159.6 L77.8,159.9 L82.6,160.4 L87.4,161.2 L92.3,162.0 L97.1,163.3 L101.9,164.9 L106.7,166.5 L111.6,170.7 L116.4,173.2 L121.2,178.4 L126.0,183.3 L130.9,183.8 L135.7,184.1 L140.5,184.4 L145.3,182.1 L150.2,179.5 L155.0,176.9 L159.8,174.2 L164.6,171.5 L169.5,171.5 L174.3,168.8 L179.1,166.1 L183.9,163.4 L188.8,160.6 L193.6,157.8 L198.4,154.9 L203.2,145.3 L208.1,146.0 L212.9,146.8 L217.7,145.8 L222.5,144.6 L227.4,143.4 L232.2,143.0 L237.0,143.5 L241.8,144.1 L246.7,144.7 L251.5,144.8 L256.3,145.0 L261.1,145.2 L266.0,145.4 L270.8,145.8 L275.6,146.1 L280.4,146.6 L285.3,147.1 L290.1,147.7 L294.9,148.4 L299.7,149.1 L304.6,150.0 L309.4,150.9 L314.2,151.9 L319.0,153.0 L323.9,154.2 L328.7,155.5 L333.5,156.9 L338.3,158.4 L343.2,160.0 L348.0,161.7" class="ln acc"/>
+<path d="M44.0,157.1 L48.8,159.1 L53.7,158.4 L58.5,157.7 L63.3,157.1 L68.1,156.9 L73.0,159.8 L77.8,160.3 L82.6,161.1 L87.4,162.1 L92.3,163.2 L97.1,165.0 L101.9,167.1 L106.7,169.2 L111.6,173.9 L116.4,176.9 L121.2,182.7 L126.0,188.1 L130.9,189.1 L135.7,189.9 L140.5,190.8 L145.3,189.0 L150.2,186.9 L155.0,184.8 L159.8,182.7 L164.6,180.5 L169.5,181.0 L174.3,178.8 L179.1,176.6 L183.9,174.4 L188.8,172.2 L193.6,170.0 L198.4,167.8 L203.2,159.0 L208.1,160.7 L212.9,162.4 L217.7,162.0 L222.5,161.2 L227.4,160.5 L232.2,160.7 L237.0,161.7 L241.8,162.8 L246.7,164.0 L251.5,164.7 L256.3,165.4 L261.1,166.2 L266.0,167.0 L270.8,167.9 L275.6,168.8 L280.4,169.8 L285.3,170.8 L290.1,171.9 L294.9,173.1 L299.7,174.3 L304.6,175.5 L309.4,176.9 L314.2,178.3 L319.0,179.7 L323.9,181.2 L328.7,182.8 L333.5,184.4 L338.3,186.1 L343.2,187.9 L348.0,189.8" class="ln warn" stroke-dasharray="5 4"/>
+<text x="140.5" y="201.4" class="note-t" text-anchor="middle">52歳で−1,348万円</text>
+</svg>
+    </figure>
+    <p class="small">マイナスは「その年までに足りなくなる額」です。実際には、ここまでに借入や支出の見直しが必要になります。</p>
+  </section>
+
+  <section class="card">
+    <div class="sec"><span class="no">04</span><h2>何を変えれば回るか</h2></div>
+    <p>1つずつ条件を変えて計算し直しました。金利は、断りがなければ基本です。</p>
+    <ul class="levers">
+<li class="neg"><p class="lt">このまま</p><dl><div><dt>最も少ない時</dt><dd class="num">−1,348<small>万円</small><small class="age">52歳のとき</small></dd></div><div><dt>不足する年齢</dt><dd class="num st">46歳</dd></div><div><dt>95歳時点</dt><dd class="num">389<small>万円</small></dd></div></dl></li>
+<li class="neg"><p class="lt">物件価格を3,480万円にする</p><p class="ln2">借入3,524万円・毎月10.7万円</p><dl><div><dt>最も少ない時</dt><dd class="num">−911<small>万円</small><small class="age">52歳のとき</small></dd></div><div><dt>不足する年齢</dt><dd class="num st">47歳</dd></div><div><dt>95歳時点</dt><dd class="num">2,467<small>万円</small></dd></div></dl></li>
+<li class="neg"><p class="lt">大学を2人とも国立にする</p><dl><div><dt>最も少ない時</dt><dd class="num">−908<small>万円</small><small class="age">49歳のとき</small></dd></div><div><dt>不足する年齢</dt><dd class="num st">46歳</dd></div><div><dt>95歳時点</dt><dd class="num">1,933<small>万円</small></dd></div></dl></li>
+<li class="pos"><p class="lt">妻が2031年4月から手取り200万円で働く</p><p class="ln2">子2の小学校入学に合わせる</p><dl><div><dt>最も少ない時</dt><dd class="num">128<small>万円</small><small class="age">49歳のとき</small></dd></div><div><dt>不足する年齢</dt><dd class="num st">なし</dd></div><div><dt>95歳時点</dt><dd class="num">10,942<small>万円</small></dd></div></dl></li>
+<li class="neg"><p class="lt">同上＋金利が大きく上がる</p><dl><div><dt>最も少ない時</dt><dd class="num">−262<small>万円</small><small class="age">49歳のとき</small></dd></div><div><dt>不足する年齢</dt><dd class="num st">49歳</dd></div><div><dt>95歳時点</dt><dd class="num">8,669<small>万円</small></dd></div></dl></li>
+<li class="pos"><p class="lt">同上＋大学を2人とも国立にする</p><p class="ln2">金利が大きく上がる場合</p><dl><div><dt>最も少ない時</dt><dd class="num">98<small>万円</small><small class="age">49歳のとき</small></dd></div><div><dt>不足する年齢</dt><dd class="num st">なし</dd></div><div><dt>95歳時点</dt><dd class="num">10,101<small>万円</small></dd></div></dl></li>
+    </ul>
+    <p class="small">妻の働き方は、手取り200万円（額面260万円・社会保険に加入）を2031年4月から60歳まで続ける想定です。どの組み合わせを選ぶかは、ご夫婦で決めることです。</p>
+  </section>
+
+  <section class="card">
+    <div class="sec"><span class="no">05</span><h2>注意点</h2></div>
+    <ul class="warns">
+      <li><b>購入直後の現金は200万円</b>生活防衛資金とちょうど同じ額で、急な出費への余裕がありません。</li>
+      <li><b>住居費は手取りの28%</b>住宅ローン控除が終わる2040年以降は32%に上がります。控除がある前提で返済額を決めないことが大切です。</li>
+      <li><b>退職後もローンが残る</b>65歳で346万円、完済は68歳。退職した翌年の家計は月7.8万円の赤字で、資産から取り崩します。</li>
+      <li><b>車の買い替えが山場の前後に重なる</b>2032年と2042年の買い替えが、赤字の始まりと大学費用の時期に当たっています。</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="sec"><span class="no">06</span><h2>次にやること</h2></div>
+    <ol class="todo">
+      <li>妻の働き方（いつから・どのくらい）を夫婦で話し、時期と手取りの見込みを決める</li>
+      <li>大学の想定（国立か私立か、自宅か下宿か）をすり合わせる</li>
+      <li>毎月の返済の上限（今は月14万円）を、金利が上がったときの月16.9万円と比べて決め直す</li>
+      <li>車の買い替えの時期と金額を、大学費用の時期からずらせるか考える</li>
+      <li>申込の前に、頭金を減らして手元の現金を厚くするかを決める</li>
+    </ol>
+  </section>
+
+  <footer class="foot">
+    <p>このレポートは判断材料です。買う・買わないの結論はお伝えしません。住宅購入ライフプランシートの入力値と1年ごとの計算にもとづく試算で、将来の金利・収入・運用成果を保証するものではありません。金額は物価上昇込みの名目額です。金利の「基本（市場予想）」は2026年10月時点の市場予想をもとにしています。</p>
+    <p>作成：かじ｜家を買う前の数字とチェック（AFP）</p>
+    <a class="btn" href="./#cta">家の予算いくらまで？に戻る</a>
+  </footer>
+</div>
+</body>
+</html>
