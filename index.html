@@ -265,6 +265,7 @@ details.more[open]{gap:12px}
     <h2 id="rTitle">あなたの家計で考える物件価格の目安</h2>
     <div class="big" id="safeVal"></div>
     <p class="second" id="limitWhy"></p>
+    <div id="rangeWarn"></div>
     <div class="ledger" id="planBox"></div>
     <div class="ruler" id="ruler" aria-hidden="true"></div>
     <div class="rleg" aria-hidden="true"><span><i style="background:var(--z-ok)"></i>目安の範囲（金利<span class="stressT">2.5</span>%でも収まる）</span><span><i style="background:var(--z-amber)"></i>今の金利なら収まる</span><span><i style="background:var(--z-warn)"></i>設定した条件では収まらない</span></div>
@@ -403,6 +404,20 @@ function base(){
   b.fixedNoHouse = b.mLiving + b.yRes + b.plan + b.save;   // 住まい以外に毎月出ていくお金（教育費は積立から出す）
   return b;
 }
+// 目安の判定に使う返済期間：35年以内・80歳までに払い終わる範囲（入れた期間がそれより長くても、目安はこの範囲で出す）
+var JUDGE_MAX = 35, END_AGE = 80;
+function judgeYears(){
+  var y = n(I.years), age = n(I.age), cap = age > 0 ? Math.max(10, Math.min(JUDGE_MAX, END_AGE - age)) : JUDGE_MAX;
+  return Math.min(y, cap);
+}
+// 入れた返済期間が前提の範囲外か（35年超、または借りる人の年齢＋返済期間が80歳超）
+function outOfRange(){ var y = n(I.years); return y > JUDGE_MAX || (n(I.age) > 0 && n(I.age) + y > END_AGE); }
+function judgeBase(b){
+  if (!outOfRange()) return b;
+  var j = Object.assign({}, b); j.months = Math.max(12, Math.round(judgeYears() * 12)); return j;
+}
+function yrsOf(b){ return Math.round(b.months / 12 * 10) / 10; }
+function rangeMsg(){ var y = n(I.years); return "前提の範囲外です：返済期間" + y + "年だと、" + ageTxt(n(I.age) + y) + "で払い終わります。"; }
 function stageOf(i){ var st = (I.stages || [])[i]; return STAGES.filter(function(x){ return x[0] === st; })[0] || STAGES[0]; }
 function kidUpOf(){ var t = 0; for (var i = 0; i < n(I.kids); i++) t += stageOf(i)[2]; return t; }
 function maint(P){ return P * TAX_RATE / 12 + (I.type === "マンション" ? 3.1 : 1.8); }
@@ -472,7 +487,7 @@ function retireHTML(b, a){
   var t = at65(b, a);
   if (t.age >= RET_AGE) return "";
   var h = '<h3>' + RET_AGE + '歳の時点では（約' + man(a.P) + '万円で買った場合）</h3><div class="ledger">' +
-    lr("in", "払い終わる年齢", ageTxt(t.endAge), "借入" + man(a.L) + "万円・" + n(I.years) + "年") +
+    lr("in", "払い終わる年齢", ageTxt(t.endAge), "借入" + man(a.L) + "万円・" + yrsOf(b) + "年") +
     lr("out", RET_AGE + "歳時点のローン残高", man(t.bal) + "万円", t.bal > 0 ? "金利" + b.rate + "%のまま。金利" + b.stress + "%なら" + man(t.balUp) + "万円" : RET_AGE + "歳より前に払い終わります") +
     lr("in", "現金の貯金", man(t.cash) + "万円", "買った後に残る" + man(Math.max(0, a.left)) + "万円＋月" + n(I.saveCash) + "万円×" + Math.round(t.k / 12) + "年") +
     lr("in", "NISA", man(t.nisa) + "万円", "月" + n(I.saveNisa) + "万円×" + Math.round(t.k / 12) + "年" + (n(I.nisaRet) > 0 ? "・年" + n(I.nisaRet) + "%で増えた場合" : "（増えない場合）")) +
@@ -529,7 +544,7 @@ document.addEventListener("click", function(ev){
   else if (d.plan !== undefined) { I.kidsPlan = +d.plan; segs(); save(); render(); }
   else if (d.stage !== undefined) { I.stages[+d.stage] = d.v; segs(); save(); render(); }
   else if (d.type) { I.type = d.type; segs(); save(); render(); }
-  else if (d.ck) { I.chk = I.chk || {}; I.chk[d.ck] = d.st; save(); renderChk(); }
+  else if (d.ck) { I.chk = I.chk || {}; I.chk[d.ck] = d.st; save(); renderChk(); updSummary(); }
   else if (b.id === "resetBtn") { I = clone(SAMPLE); calcSpend(); yearsTouched = false; try { localStorage.removeItem(KEY); } catch (e) {} fill(); render(); }
   else if (b.id === "clearBtn") { I = clone(BLANK); calcSpend(); yearsTouched = false; save(); fill(); render(); $("takeM").focus(); }
   else if (b.id === "copyBtn") copySummary();
@@ -562,13 +577,16 @@ function render(){
   $("kidLine").innerHTML = (b.kidUp + b.planOnly > 0) ? "→ 子どものこれから増える費用として、毎月<b>" + yenM(b.kidUp + b.planOnly) + "</b>を足して計算します（" + [b.kidUp > 0 ? "今いる子ども" + yenM(b.kidUp) : "", b.planOnly > 0 ? "予定の子ども" + yenM(b.planOnly) : ""].filter(Boolean).join("＋") + "）。" : "→ 子どもの費用は足していません。";
   if (!ready()) {
     $("safeVal").innerHTML = '<span style="font-size:20px;color:var(--ink-3)">質問1・4・5・7を入れると表示します</span>';
-    ["limitWhy","planBox","ruler","cashWarn","retire","chain","fund","zoneLine","ledgerN","facts"].forEach(function(id){ $(id).innerHTML = ""; });
-    OUT = null; renderPlist(b); renderChk(); return;
+    ["limitWhy","rangeWarn","planBox","ruler","cashWarn","retire","chain","fund","zoneLine","ledgerN","facts"].forEach(function(id){ $(id).innerHTML = ""; });
+    OUT = null; renderPlist(b); renderChk(); updSummary(); return;
   }
-  var B0 = budget(b, true), B1 = budget(b, false);
-  var a0 = evalAt(b, B0.P, false);
-  OUT = { b: b, B0: B0, B1: B1, a0: a0 };
-  renderResult(b, B0, B1, a0);
+  // 物件価格の目安は、前提の範囲内（35年以内・80歳まで）の返済期間で判定する
+  var bJ = judgeBase(b);
+  var B0 = budget(bJ, true), B1 = budget(bJ, false);
+  var a0 = evalAt(bJ, B0.P, false);
+  OUT = { b: b, bJ: bJ, B0: B0, B1: B1, a0: a0 };
+  renderResult(bJ, B0, B1, a0);
+  $("rangeWarn").innerHTML = outOfRange() ? note("warn", rangeMsg() + "上の目安は、前提の範囲内の" + yrsOf(bJ) + "年（" + ageTxt(n(I.age) + yrsOf(bJ)) + "で払い終わる）で判定しています。") : "";
   var P = isSet(I.price) && I.price > 0 ? +I.price : (B0.P > 0 ? B0.P : 2000);
   var top = Math.max(2000, Math.ceil(Math.max(B1.P * 1.3, P * 1.1, B0.P + 500) / 500) * 500);
   var rg = $("priceRange"); rg.max = top; rg.min = 500; if (document.activeElement !== rg) rg.value = P;
@@ -579,7 +597,8 @@ function render(){
   OUT.aP = aP;
   renderCheck(b, aP);
   renderMonthly(b, aP);
-  renderPlist(b); renderChk();
+  if (outOfRange()) $("zoneLine").innerHTML = note("warn", rangeMsg() + "下の返済と払い終わる年齢は、入れた" + n(I.years) + "年で計算しています。") + $("zoneLine").innerHTML;
+  renderPlist(b); renderChk(); updSummary();
 }
 function renderResult(b, B0, B1, a){
   if (B0.P <= 0) {
@@ -622,7 +641,7 @@ function chainHTML(b, a){
     lr("out", "家の維持費", "−" + yenM(a.maint), "固定資産税・火災保険・" + (I.type === "マンション" ? "管理費と修繕積立金" : "修繕の積立") + "の月割り") +
     lr("out", "自由費として残す分", "−" + yenM(b.freeMin), "こづかいなど。前提の欄で変えられます") +
     lr("sum", "返済に回せる額", "月" + yenM(Math.max(0, r))) +
-    lr("res", "→ 家計から計算した借入目安", "最大" + man(maxLoan) + "万円", "金利" + b.stress + "%・" + n(I.years) + "年で、この返済額で返せる借入。金融機関の審査で借りられる額とは別です") + '</div>' +
+    lr("res", "→ 家計から計算した借入目安", "最大" + man(maxLoan) + "万円", "金利" + b.stress + "%・" + yrsOf(b) + "年で、この返済額で返せる借入。金融機関の審査で借りられる額とは別です") + '</div>' +
     '<div class="step">② 貯蓄から → 諸費用と頭金</div><div class="ledger">' +
     lr("in", "貯蓄（今の貯金）", man(n(I.cash)) + "万円") +
     lr("out", "生活防衛資金として残す", "−" + man(a.reserve) + "万円", "（生活費" + yenM(b.living) + "＋返済" + yenM(a.payUp) + "＋維持費" + yenM(a.maint) + "）×6か月。返済は金利" + b.stress + "%で計算。積立は含めません") +
@@ -670,7 +689,7 @@ function renderMonthly(b, a){
   var h = lr("in", "手取り（ボーナス込みの月平均）", yenM(b.incM), "毎月" + n(I.takeM) + "万円＋ボーナス年" + n(I.bonus) + "万円÷12") +
     out("生活費（毎月の出費）", b.mLiving, "今の子どもの保育料・習い事なども含む") +
     (b.yRes > 0 ? out("年払いに備える取り置き", b.yRes, "旅行・車検など年" + man(b.yYear) + "万円÷12") : "") +
-    out("住宅ローンの返済", a.pay, "借入" + man(a.L) + "万円・" + n(I.years) + "年・金利" + b.rate + "%") +
+    out("住宅ローンの返済", a.pay, "借入" + man(a.L) + "万円・" + yrsOf(b) + "年・金利" + b.rate + "%") +
     out("家の維持費", a.maint, "固定資産税（年" + Math.round(a.P * TAX_RATE) + "万円ほど）・火災保険・" + (I.type === "マンション" ? "管理費と修繕積立金" : "修繕の積立")) +
     (b.kidUp > 0 ? out("今いる子どもの、これから増える費用", b.kidUp, kidUpNote()) : "") +
     (b.planOnly > 0 ? out("予定の子どもの費用", b.planOnly, n(I.kidsPlan) + "人×月" + n(I.planPer) + "万円（児童手当を差し引いた額）") : "") +
@@ -696,7 +715,7 @@ function renderPlist(b){
     "ボーナスは12で割って毎月の手取りに入れています。年払いの出費（旅行・車検など）も12で割った取り置きとして引くので、二重には数えていません。",
     "生活防衛資金は（生活費＋住宅ローンの返済＋家の維持費）の6か月分で、最低100万円。返済は金利" + b.stress + "%で計算し、現金・NISAの積立は含めません。",
     "家の維持費：固定資産税は物件価格の年0.3%、火災保険と" + (I.type === "マンション" ? "管理費・修繕積立金で月3.1万円" : "修繕の積立で月1.8万円") + "。諸費用は物件価格（本体価格）の7%。",
-    "返済期間は、80歳までに払い終わる範囲で最長35年。",
+    "物件価格の目安は、返済期間35年以内・80歳までに払い終わる前提で判定します（返済期間は年齢から自動で入ります）。それより長い期間も入れて計算できますが、前提の範囲外として扱い、目安は前提の範囲内の期間で出します。「気になる物件で確かめる」の返済などは、入れた期間で計算します。",
     RET_AGE + "歳の時点の見込み：ローン残高は今の金利のまま返した場合の残り。現金の貯金は、買った後に残る貯金に毎月の積立を足した額（利息なし）。NISAは毎月の積立が年" + n(I.nisaRet) + "%で増えた場合。大学費用は子ども1人" + n(I.uniPer) + "万円（国公立4年間のおおよその目安）を差し引きます。途中で貯金を使う分、退職金、年金は入れていません。",
     "金融機関の審査で借りられる額や、将来の家計の安全を示すものではありません。",
     NOT_INCLUDED
@@ -720,10 +739,10 @@ function summary(){
   L.push("■今の家賃：月" + n(I.rent) + "万円／生活費：毎月" + (Math.round(b.mLiving * 10) / 10) + "万円＋年払い" + man(b.yYear) + "万円（" + EXP.filter(function(e){ return n(I.exp[e[0]]) > 0; }).map(function(e){ return e[1].replace(/（.*?）/g, "") + n(I.exp[e[0]]) + (e[2] === "y" ? "/年" : ""); }).join("・") + "）／今の貯金：" + n(I.cash) + "万円");
   L.push("■買った後も続ける積立：現金 月" + n(I.saveCash) + "万円／NISA 月" + n(I.saveNisa) + "万円／残したい自由費 月" + n(I.freeMin) + "万円");
   L.push("■年齢：" + n(I.age) + "歳／子ども：今" + n(I.kids) + "人（" + (n(I.kids) ? kidUpNote() : "-") + "）・予定" + n(I.kidsPlan) + "人／子どもの増える費用 月" + yenM(base().plan) + "／考えている家：" + I.type);
-  L.push("■金利：今" + b.rate + "%・判定" + b.stress + "%／返済期間" + n(I.years) + "年");
+  L.push("■金利：今" + b.rate + "%・判定" + b.stress + "%／返済期間" + n(I.years) + "年" + (outOfRange() ? "（前提の範囲外。" + ageTxt(n(I.age) + n(I.years)) + "で払い終わる。目安は" + yrsOf(judgeBase(b)) + "年で判定）" : ""));
   if (OUT) {
     if (OUT.B0.P > 0) {
-      L.push("■物件価格の目安：約" + man(OUT.B0.P) + "万円まで（金利" + b.stress + "%で判定）／今の金利のままなら約" + man(OUT.B1.P) + "万円／生活費が月1万円多いと約" + man(sensOf(b, OUT.B0).P) + "万円");
+      L.push("■物件価格の目安：約" + man(OUT.B0.P) + "万円まで（金利" + b.stress + "%で判定）／今の金利のままなら約" + man(OUT.B1.P) + "万円／生活費が月1万円多いと約" + man(sensOf(OUT.bJ, OUT.B0).P) + "万円");
     } else L.push("■物件価格の目安：いまの条件では計算できません（" + (OUT.B0.why === "monthly" ? "通常月に返済へ回せる余裕がない" : "貯金が生活防衛資金に足りない") + "）");
     var a = OUT.aP;
     L.push("■" + man(a.P) + "万円で確かめた場合：諸費用" + man(a.C) + "万円・借入" + man(a.L) + "万円・貯金から" + man(a.own) + "万円・残る貯金" + man(a.left) + "万円（必要な生活防衛資金" + man(a.reserve) + "万円）");
@@ -737,9 +756,11 @@ function summary(){
   L.push("■気になっていること：（ここに書いてください）");
   return L.join("\n");
 }
+// まとめ欄は再計算のたびに作り直す（画面の数字と常に同じ）
+function updSummary(){ $("copyBox").value = summary(); }
+// コピーは、その時点でまとめ欄にある文章をそのままコピーするだけ
 function copySummary(){
-  var t = summary(), box = $("copyBox"), msg = $("copyMsg");
-  box.value = t;
+  var box = $("copyBox"), msg = $("copyMsg"), t = box.value;
   var fb = function(){ box.hidden = false; box.focus(); box.select(); msg.textContent = "下の文章を長押しでコピーしてください。"; };
   try { navigator.clipboard.writeText(t).then(function(){ box.hidden = false; msg.textContent = "コピーしました。LINEやメールに貼り付けて使えます。"; }, fb); } catch (e) { fb(); }
 }
